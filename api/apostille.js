@@ -14,16 +14,17 @@ JSON 외의 텍스트나 마크다운 코드블록을 절대 추가하지 마세
 }`;
 
 function sendJson(res, status, payload) {
-  res.statusCode = status;
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Cache-Control", "no-store");
-  res.end(JSON.stringify(payload));
-}
-
-async function readBody(req) {
-  if (req.body && typeof req.body === "object") return req.body;
-  if (typeof req.body === "string") return JSON.parse(req.body || "{}");
-  return {};
+  try {
+    res.statusCode = status;
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.setHeader("Cache-Control", "no-store");
+    return res.end(JSON.stringify(payload));
+  } catch (error) {
+    return res.end(JSON.stringify({
+      error: "응답 생성 중 오류가 발생했습니다.",
+      detail: error && error.message ? error.message : String(error)
+    }));
+  }
 }
 
 function extractJson(text) {
@@ -39,31 +40,48 @@ function extractJson(text) {
 }
 
 async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return sendJson(res, 405, { error: "POST 요청만 지원합니다." });
-  }
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return sendJson(res, 500, { error: "Vercel 환경변수 ANTHROPIC_API_KEY가 설정되지 않았습니다." });
-  }
-
-  let body;
   try {
-    body = await readBody(req);
-  } catch {
-    return sendJson(res, 400, { error: "요청 본문 JSON을 읽지 못했습니다." });
-  }
+    if (req.method !== "POST") {
+      res.setHeader("Allow", "POST");
+      return sendJson(res, 405, { error: "POST 요청만 지원합니다." });
+    }
 
-  const country = String(body?.country || "").trim();
-  if (!country) {
-    return sendJson(res, 400, { error: "조회할 국가명을 입력해 주세요." });
-  }
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return sendJson(res, 500, { error: "Vercel 환경변수 ANTHROPIC_API_KEY가 설정되지 않았습니다." });
+    }
 
-  try {
+    let body = {};
+    try {
+      if (req.body && typeof req.body === "object") {
+        body = req.body;
+      } else if (typeof req.body === "string") {
+        body = JSON.parse(req.body || "{}");
+      }
+    } catch (error) {
+      return sendJson(res, 400, {
+        error: "요청 본문 JSON을 읽지 못했습니다.",
+        detail: error && error.message ? error.message : String(error)
+      });
+    }
+
+    const country = String((body && body.country) || "").trim();
+    if (!country) {
+      return sendJson(res, 400, { error: "조회할 국가명을 입력해 주세요." });
+    }
+
+    if (typeof fetch !== "function") {
+      return sendJson(res, 500, {
+        error: "현재 Vercel Node 런타임에서 fetch를 사용할 수 없습니다. Project Settings에서 Node.js 18 이상을 사용해 주세요."
+      });
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+
     const anthropicResp = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
+      signal: controller.signal,
       headers: {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
@@ -85,6 +103,8 @@ async function handler(req, res) {
         }]
       })
     });
+
+    clearTimeout(timeout);
 
     const data = await anthropicResp.json().catch(() => null);
 
@@ -109,8 +129,14 @@ async function handler(req, res) {
     const result = extractJson(text);
     return sendJson(res, 200, { result });
   } catch (error) {
+    if (error && error.name === "AbortError") {
+      return sendJson(res, 504, {
+        error: "아포스티유 실시간 조회가 8초 안에 끝나지 않았습니다. 잠시 후 다시 시도해 주세요."
+      });
+    }
+
     return sendJson(res, 500, {
-      error: error.message || "아포스티유 조회 중 오류가 발생했습니다."
+      error: error && error.message ? error.message : "아포스티유 조회 중 오류가 발생했습니다."
     });
   }
 }
