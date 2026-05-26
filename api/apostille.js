@@ -1,3 +1,6 @@
+수정된 [apostille.js](C:/Users/user/Desktop/api/apostille.js:1) 전체입니다.
+
+```js
 const APOSTILLE_SYSTEM_PROMPT = `당신은 대한민국 초등학교 학적 담당자를 돕는 전문 보조 AI입니다.
 사용자가 입력한 국가가 헤이그 협약(아포스티유, Apostille Convention)에 가입되어 있는지 웹 검색을 통해 최신 정보를 확인하고, 다음 JSON 형식으로만 답하세요.
 JSON 외의 텍스트나 마크다운 코드블록을 절대 추가하지 마세요.
@@ -86,3 +89,4 @@ export default async function handler(req, res) {
     return sendJson(res, 500, { error: error.message || "아포스티유 조회 중 오류가 발생했습니다." });
   }
 }
+```
