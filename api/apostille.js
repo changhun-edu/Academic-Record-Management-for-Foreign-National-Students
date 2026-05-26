@@ -13,9 +13,7 @@ JSON 외의 텍스트나 마크다운 코드블록을 절대 추가하지 마세
   "search_date": "조회 기준 날짜 YYYY-MM-DD(모르면 null)"
 }`;
 
-export const config = {
-  maxDuration: 30
-};
+export const maxDuration = 30;
 
 function sendJson(res, status, payload) {
   res.statusCode = status;
@@ -27,11 +25,7 @@ function sendJson(res, status, payload) {
 async function readBody(req) {
   if (req.body && typeof req.body === "object") return req.body;
   if (typeof req.body === "string") return JSON.parse(req.body || "{}");
-
-  const chunks = [];
-  for await (const chunk of req) chunks.push(chunk);
-  const raw = Buffer.concat(chunks).toString("utf8").trim();
-  return raw ? JSON.parse(raw) : {};
+  return {};
 }
 
 function extractJson(text) {
