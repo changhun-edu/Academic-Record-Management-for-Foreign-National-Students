@@ -16,7 +16,7 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/babel">
+  <script type="text/babel" data-presets="react,env">
     const { useState, useEffect, useCallback } = React;
 
     // ── 인라인 SVG 아이콘 (lucide 대체) ──────────────────
@@ -751,10 +751,267 @@ function CalculatorTab() {
   );
 }
 
+
 // ╔══════════════════════════════════════════════════════╗
 // ║  아포스티유 협약국 확인 탭                           ║
 // ╚══════════════════════════════════════════════════════╝
 
+// ── HCCH 아포스티유 협약 가입국 자체 데이터 (ISO alpha-2 키) ──────────────
+// 출처: HCCH(헤이그국제사법회의) 협약 제12호 가입국 현황
+// 데이터 기준일: 2025년 기준 / 미수록 국가 = 미가입국으로 처리
+const APOSTILLE_DB = {
+  // ── 아시아·대양주 ──
+  AU: { joined: "1995-03-10" },
+  BD: { joined: "2025-05-30", note: "2025.05.30. 신규 가입" },
+  CK: { joined: "2009-02-23" },
+  FJ: { joined: "1971-08-09" },
+  HK: { joined: "1965-01-05", note: "중국 홍콩 특별행정구 (별도 가입)" },
+  ID: { joined: "2022-05-10", note: "2022년 신규 가입" },
+  IL: { joined: "1978-08-02" },
+  IN: { joined: "2005-01-11" },
+  JP: { joined: "1970-07-15" },
+  KR: { joined: "2007-07-14" },
+  KG: { joined: "2014-10-01" },
+  KZ: { joined: "2001-01-30" },
+  LK: { joined: "2002-01-17" },
+  MH: { joined: "2010-08-28" },
+  MN: { joined: "2009-09-02" },
+  MO: { joined: "1999-12-20", note: "중국 마카오 특별행정구 (별도 가입)" },
+  MU: { joined: "1997-12-19" },
+  NR: { joined: "2012-04-13" },
+  NU: { joined: "2014-10-01" },
+  NZ: { joined: "2002-05-30" },
+  PH: { joined: "1996-09-14" },
+  PW: { joined: "2015-01-04" },
+  SC: { joined: "2002-09-25" },
+  SG: { joined: "2021-09-16", note: "2021년 신규 가입" },
+  TJ: { joined: "2015-07-20" },
+  TM: { joined: "2001-06-29" },
+  TO: { joined: "2002-04-26" },
+  UZ: { joined: "2014-05-01" },
+  VU: { joined: "2012-04-25" },
+  WS: { joined: "2008-01-09" },
+
+  // ── 중동 ──
+  AE: { joined: "2009-01-31" },
+  AM: { joined: "1994-02-14" },
+  AZ: { joined: "2004-01-17" },
+  BH: { joined: "2013-05-31" },
+  GE: { joined: "1999-04-14" },
+  JO: { joined: "2018-01-17" },
+  KW: { joined: "2015-08-12" },
+  OM: { joined: "2012-06-04" },
+  QA: { joined: "2012-03-16" },
+  SA: { joined: "2012-12-13" },
+  TR: { joined: "1984-12-06" },
+
+  // ── 유럽 ──
+  AD: { joined: "1996-11-28" },
+  AL: { joined: "2004-03-12" },
+  AT: { joined: "1968-01-13" },
+  BA: { joined: "1993-01-06" },
+  BE: { joined: "1975-07-09" },
+  BG: { joined: "2001-08-29" },
+  BY: { joined: "1992-11-30" },
+  CH: { joined: "1973-09-05" },
+  CY: { joined: "1972-09-24" },
+  CZ: { joined: "1998-02-23" },
+  DE: { joined: "1965-04-30" },
+  DK: { joined: "1977-03-02" },
+  EE: { joined: "2001-02-26" },
+  ES: { joined: "1978-09-25" },
+  FI: { joined: "1985-05-11" },
+  FR: { joined: "1965-01-24" },
+  GB: { joined: "1965-01-24" },
+  GR: { joined: "1985-06-17" },
+  HR: { joined: "1991-10-08" },
+  HU: { joined: "1973-07-29" },
+  IE: { joined: "1999-10-09" },
+  IS: { joined: "2004-01-29" },
+  IT: { joined: "1978-02-11" },
+  LI: { joined: "1972-09-23" },
+  LT: { joined: "1996-01-22" },
+  LU: { joined: "1979-09-15" },
+  LV: { joined: "1996-09-25" },
+  MC: { joined: "2003-05-15" },
+  MD: { joined: "2007-03-16" },
+  ME: { joined: "2006-06-03" },
+  MK: { joined: "2000-02-08" },
+  MT: { joined: "1991-05-03" },
+  NL: { joined: "1965-02-26" },
+  NO: { joined: "1983-07-12" },
+  PL: { joined: "2005-08-14" },
+  PT: { joined: "1968-01-06" },
+  RO: { joined: "2001-01-16" },
+  RS: { joined: "2006-06-03" },
+  RU: { joined: "1992-05-31" },
+  SE: { joined: "1979-01-01" },
+  SI: { joined: "1992-06-25" },
+  SK: { joined: "2002-04-10" },
+  SM: { joined: "1994-12-01" },
+  UA: { joined: "2003-12-22" },
+
+  // ── 아메리카 ──
+  AG: { joined: "1985-09-01" },
+  AR: { joined: "1987-02-08" },
+  BB: { joined: "1979-06-24" },
+  BO: { joined: "2020-05-01", note: "2020년 신규 가입" },
+  BR: { joined: "2016-08-14" },
+  BS: { joined: "1977-06-23" },
+  BZ: { joined: "1993-09-16" },
+  CA: { joined: "1988-01-10" },
+  CL: { joined: "1981-04-30" },
+  CO: { joined: "2000-04-30" },
+  CR: { joined: "1997-01-19" },
+  DO: { joined: "2009-02-15" },
+  EC: { joined: "1985-08-09" },
+  GD: { joined: "1994-01-01" },
+  GT: { joined: "2019-04-16" },
+  HN: { joined: "2003-08-18" },
+  KN: { joined: "1994-04-03" },
+  LC: { joined: "2002-09-01" },
+  MX: { joined: "1995-08-14" },
+  NI: { joined: "2013-10-14" },
+  PA: { joined: "1991-10-18" },
+  PE: { joined: "2010-05-31" },
+  PY: { joined: "2013-06-18" },
+  SR: { joined: "2002-10-13" },
+  SV: { joined: "1996-10-14" },
+  TT: { joined: "2001-06-24" },
+  US: { joined: "1981-10-15" },
+  UY: { joined: "1988-06-14" },
+  VC: { joined: "2002-11-06" },
+  VE: { joined: "2000-07-12" },
+
+  // ── 아프리카 ──
+  BW: { joined: "2000-02-10" },
+  CV: { joined: "1984-12-07" },
+  LS: { joined: "2013-08-30" },
+  LR: { joined: "1996-02-20" },
+  MA: { joined: "2016-01-19" },
+  MW: { joined: "2016-06-24" },
+  MZ: { joined: "2018-01-30" },
+  NA: { joined: "2001-01-30" },
+  RW: { joined: "2019-01-21" },
+  SN: { joined: "1994-05-30" },
+  SZ: { joined: "1979-01-01" },
+  ZA: { joined: "1995-01-27" },
+};
+
+// ── REST Countries API 한→영 검색어 힌트 ────────────────────────────────
+// REST Countries API가 일부 한국어 국가명을 인식하지 못할 경우를 대비한 보조 매핑
+const KO_EN_HINTS = {
+  "대한민국": "korea", "한국": "korea",
+  "미국": "united states", "미합중국": "united states",
+  "영국": "united kingdom",
+  "중국": "china",
+  "홍콩": "hong kong",
+  "마카오": "macao",
+  "대만": "taiwan",
+  "일본": "japan",
+  "독일": "germany",
+  "프랑스": "france",
+  "러시아": "russia",
+  "베트남": "vietnam",
+  "캄보디아": "cambodia",
+  "태국": "thailand",
+  "미얀마": "myanmar",
+  "필리핀": "philippines",
+  "인도네시아": "indonesia",
+  "인도": "india",
+  "방글라데시": "bangladesh",
+  "파키스탄": "pakistan",
+  "네팔": "nepal",
+  "스리랑카": "sri lanka",
+  "카자흐스탄": "kazakhstan",
+  "우즈베키스탄": "uzbekistan",
+  "키르기스스탄": "kyrgyzstan",
+  "타지키스탄": "tajikistan",
+  "투르크메니스탄": "turkmenistan",
+  "몽골": "mongolia",
+  "싱가포르": "singapore",
+  "말레이시아": "malaysia",
+  "브루나이": "brunei",
+  "호주": "australia",
+  "뉴질랜드": "new zealand",
+  "이스라엘": "israel",
+  "사우디아라비아": "saudi arabia",
+  "아랍에미리트": "united arab emirates",
+  "카타르": "qatar",
+  "쿠웨이트": "kuwait",
+  "오만": "oman",
+  "바레인": "bahrain",
+  "요르단": "jordan",
+  "터키": "turkey", "튀르키예": "turkey",
+  "이란": "iran",
+  "이라크": "iraq",
+  "아르메니아": "armenia",
+  "아제르바이잔": "azerbaijan",
+  "조지아": "georgia",
+  "이탈리아": "italy",
+  "스페인": "spain",
+  "포르투갈": "portugal",
+  "네덜란드": "netherlands",
+  "벨기에": "belgium",
+  "스위스": "switzerland",
+  "오스트리아": "austria",
+  "스웨덴": "sweden",
+  "노르웨이": "norway",
+  "덴마크": "denmark",
+  "핀란드": "finland",
+  "폴란드": "poland",
+  "체코": "czech republic",
+  "헝가리": "hungary",
+  "루마니아": "romania",
+  "불가리아": "bulgaria",
+  "크로아티아": "croatia",
+  "세르비아": "serbia",
+  "슬로바키아": "slovakia",
+  "슬로베니아": "slovenia",
+  "그리스": "greece",
+  "우크라이나": "ukraine",
+  "라트비아": "latvia",
+  "리투아니아": "lithuania",
+  "에스토니아": "estonia",
+  "캐나다": "canada",
+  "멕시코": "mexico",
+  "브라질": "brazil",
+  "아르헨티나": "argentina",
+  "칠레": "chile",
+  "콜롬비아": "colombia",
+  "페루": "peru",
+  "에콰도르": "ecuador",
+  "베네수엘라": "venezuela",
+  "볼리비아": "bolivia",
+  "파라과이": "paraguay",
+  "우루과이": "uruguay",
+  "파나마": "panama",
+  "코스타리카": "costa rica",
+  "과테말라": "guatemala",
+  "온두라스": "honduras",
+  "엘살바도르": "el salvador",
+  "니카라과": "nicaragua",
+  "남아프리카": "south africa", "남아공": "south africa",
+  "이집트": "egypt",
+  "나이지리아": "nigeria",
+  "가나": "ghana",
+  "케냐": "kenya",
+  "에티오피아": "ethiopia",
+  "모로코": "morocco",
+  "세네갈": "senegal",
+  "르완다": "rwanda",
+  "모잠비크": "mozambique",
+  "나미비아": "namibia",
+  "보츠와나": "botswana",
+  "말라위": "malawi",
+  "모리셔스": "mauritius",
+  "세이셸": "seychelles",
+  "라이베리아": "liberia",
+  "레소토": "lesotho",
+  "에스와티니": "eswatini",
+};
+
+// ── 아포스티유 탭 ────────────────────────────────────────────────────────
 function ApostilleTab() {
   const [country, setCountry] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | done | error
@@ -769,33 +1026,56 @@ function ApostilleTab() {
     setErrorMsg("");
 
     try {
-      const resp = await fetch("/api/apostille", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          country: query
-        })
-      });
+      // 1단계: REST Countries API로 국가명 정규화 및 alpha-2 코드 취득
+      const searchTerm = KO_EN_HINTS[query.trim()] || query.trim();
+      const apiUrl = `https://restcountries.com/v3.1/name/${encodeURIComponent(searchTerm)}?fields=name,cca2,flag,translations`;
 
-      const raw = await resp.text();
-      let data = null;
-      try {
-        data = raw ? JSON.parse(raw) : null;
-      } catch {
-        data = null;
-      }
-
+      const resp = await fetch(apiUrl);
       if (!resp.ok) {
-        const detail = data?.error || raw?.slice(0, 160) || `HTTP ${resp.status}`;
-        throw new Error(detail);
+        if (resp.status === 404) throw new Error(`"${query}"에 해당하는 국가를 찾을 수 없습니다. 다른 국가명으로 시도해보세요.`);
+        throw new Error(`국가 정보 조회 실패 (HTTP ${resp.status})`);
       }
-      const info = data?.result;
-      if (!info) throw new Error("조회 결과가 비어 있습니다.");
 
-      setResult(info);
+      const list = await resp.json();
+      if (!Array.isArray(list) || list.length === 0) {
+        throw new Error(`"${query}"에 해당하는 국가를 찾을 수 없습니다.`);
+      }
+
+      // 정확히 일치하는 국가 우선 선택
+      const exact = list.find(c =>
+        c.name.common.toLowerCase() === searchTerm.toLowerCase() ||
+        (c.translations?.kor?.common || "").toLowerCase() === query.trim().toLowerCase()
+      );
+      const matched = exact || list[0];
+
+      const cca2 = matched.cca2;
+      const nameEn = matched.name.common;
+      const nameKo = matched.translations?.kor?.common || query;
+      const flag = matched.flag || "";
+
+      // 2단계: 자체 APOSTILLE_DB 조회
+      const dbEntry = APOSTILLE_DB[cca2] || null;
+      const isMember = !!dbEntry;
+
+      // 홍콩/마카오 특수 처리: 중국(CN) 입력 시 안내
+      let note = dbEntry?.note || null;
+      if (cca2 === "CN" && !isMember) {
+        note = "중국 본토는 미가입국입니다. 홍콩(HK) 또는 마카오(MO)는 별도 가입되어 있으니 해당 지역 발급 서류인지 확인하세요.";
+      }
+
+      setResult({
+        country_ko: nameKo,
+        country_en: nameEn,
+        flag,
+        cca2,
+        is_member: isMember,
+        join_date: dbEntry?.joined || null,
+        note,
+        search_date: new Date().toISOString().split("T")[0],
+      });
       setStatus("done");
 
-      const label = info.country_ko || query;
+      const label = nameKo || query;
       setHistory(h => [label, ...h.filter(x => x !== label)].slice(0, 8));
     } catch (e) {
       setErrorMsg(e.message || "알 수 없는 오류");
@@ -809,10 +1089,10 @@ function ApostilleTab() {
     <>
       {/* 개요 배너 */}
       <div className="bg-gradient-to-r from-rose-600 to-orange-500 rounded-2xl p-4 sm:p-5 text-white shadow-md">
-        <h3 className="text-base sm:text-lg font-bold mb-1 flex items-center gap-2"><Stamp size={17} />아포스티유 협약국 실시간 확인</h3>
+        <h3 className="text-base sm:text-lg font-bold mb-1 flex items-center gap-2"><Stamp size={17} />아포스티유 협약국 확인</h3>
         <p className="text-rose-100 text-xs sm:text-sm leading-relaxed">
-          협약 가입국은 매년 변동됩니다. 국가명을 입력하면 AI가 HCCH 공식 데이터를 웹 검색하여
-          <strong> 방법 2(아포스티유)</strong> 또는 <strong>방법 3(영사확인)</strong> 여부를 안내합니다.
+          국가명(한국어·영어)을 입력하면 HCCH 협약 가입 여부를 즉시 확인합니다.
+          <strong> 방법 2(아포스티유)</strong> 또는 <strong>방법 3(영사확인)</strong> 중 어느 서류 처리가 필요한지 안내합니다.
         </p>
       </div>
 
@@ -821,10 +1101,10 @@ function ApostilleTab() {
         <h4 className="font-bold text-gray-700 mb-3 text-xs sm:text-sm">📋 외국 학력서류 인증 흐름</h4>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
           {[
-            { box: "bg-blue-50 border-blue-200", badgeClass: "bg-blue-600", titleClass: "text-blue-800", subClass: "text-blue-500", badge: "방법 1", title: "교육부 홈페이지",     sub: "학력인정학교 목록" },
+            { box: "bg-blue-50 border-blue-200", badgeClass: "bg-blue-600", titleClass: "text-blue-800", subClass: "text-blue-500", badge: "방법 1", title: "교육부 홈페이지", sub: "학력인정학교 목록" },
             { box: "bg-rose-50 border-rose-200", badgeClass: "bg-rose-600", titleClass: "text-rose-800", subClass: "text-rose-500", badge: "방법 2", title: "아포스티유 (협약국)", sub: "권한기관 아포스티유" },
             { box: "bg-amber-50 border-amber-200", badgeClass: "bg-amber-600", titleClass: "text-amber-800", subClass: "text-amber-500", badge: "방법 3", title: "영사확인 (미가입국)", sub: "재외공관 영사 인증" },
-            { box: "bg-gray-50 border-gray-200", badgeClass: "bg-gray-600", titleClass: "text-gray-800", subClass: "text-gray-500", badge: "방법 4", title: "직접 소명",           sub: "정규교육기관 소명" },
+            { box: "bg-gray-50 border-gray-200", badgeClass: "bg-gray-600", titleClass: "text-gray-800", subClass: "text-gray-500", badge: "방법 4", title: "직접 소명", sub: "정규교육기관 소명" },
           ].map(({ box, badgeClass, titleClass, subClass, badge, title, sub }) => (
             <div key={badge} className={`${box} border rounded-lg p-2.5 text-center`}>
               <span className={`inline-block ${badgeClass} text-white text-[10px] font-bold px-1.5 py-0.5 rounded mb-1`}>{badge}</span>
@@ -837,8 +1117,8 @@ function ApostilleTab() {
 
       {/* 검색 카드 */}
       <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200 shadow-sm">
-        <h3 className="text-sm sm:text-base font-bold mb-1 text-gray-800 flex items-center gap-2"><Search size={15} />국가별 협약 가입 여부 실시간 조회</h3>
-        <p className="text-xs text-gray-400 mb-4">한국어 또는 영어 국가명을 입력하세요.</p>
+        <h3 className="text-sm sm:text-base font-bold mb-0.5 text-gray-800 flex items-center gap-2"><Search size={15} />국가별 협약 가입 여부 조회</h3>
+        <p className="text-xs text-gray-400 mb-4">한국어 또는 영어 국가명을 입력하세요. 내장 데이터로 즉시 조회됩니다.</p>
 
         <div className="flex gap-2 mb-3">
           <input
@@ -846,7 +1126,7 @@ function ApostilleTab() {
             value={country}
             onChange={e => setCountry(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSubmit()}
-            placeholder="예: 베트남, 중국, 몽골, Bangladesh..."
+            placeholder="예: 베트남, 중국, 몽골, Bangladesh, Philippines..."
             className="flex-1 border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-rose-400 outline-none min-w-0"
           />
           <button
@@ -860,31 +1140,51 @@ function ApostilleTab() {
           </button>
         </div>
 
+        {/* 빠른 참조 국가 */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {["베트남","중국","필리핀","인도네시아","몽골","미국","방글라데시","캄보디아","태국","일본","러시아","카자흐스탄","우즈베키스탄"].map(c => (
+            <button key={c} onClick={() => { setCountry(c); doSearch(c); }}
+              className={`text-xs px-2.5 py-1 rounded-full border transition-colors
+                ${history.includes(c)
+                  ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
+                  : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100"}`}>
+              {c}
+            </button>
+          ))}
+        </div>
+
         {/* 최근 조회 기록 */}
         {history.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {history.map(h => (
-              <button key={h} onClick={() => { setCountry(h); doSearch(h); }}
-                className="text-xs bg-gray-100 hover:bg-rose-100 hover:text-rose-700 text-gray-600 px-3 py-1 rounded-full border transition-colors">
-                {h}
-              </button>
-            ))}
+          <div className="mb-4">
+            <p className="text-[10px] text-gray-400 mb-1.5">최근 조회</p>
+            <div className="flex flex-wrap gap-1.5">
+              {history.map(h => (
+                <button key={h} onClick={() => { setCountry(h); doSearch(h); }}
+                  className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1 rounded-full border border-rose-200 transition-colors flex items-center gap-1">
+                  <span>🕐</span>{h}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
         {/* 로딩 */}
         {status === "loading" && (
-          <div className="text-center py-10 text-gray-400">
-            <Loader2 size={36} className="mx-auto mb-3 animate-spin text-rose-400" />
-            <p className="text-sm">AI가 헤이그 협약 최신 정보를 웹 검색 중입니다...</p>
+          <div className="text-center py-8 text-gray-400">
+            <Loader2 size={32} className="mx-auto mb-2 animate-spin text-rose-400" />
+            <p className="text-sm">국가 정보를 조회 중입니다...</p>
           </div>
         )}
 
         {/* 에러 */}
         {status === "error" && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex items-center gap-2">
-            <AlertCircle size={16} className="flex-shrink-0" />
-            조회 중 오류가 발생했습니다: {errorMsg}
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex items-start gap-2">
+            <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold">조회 실패</p>
+              <p className="text-xs mt-0.5">{errorMsg}</p>
+              <p className="text-xs text-red-500 mt-1">영어 국가명으로 다시 시도하거나, 국가명 힌트 버튼을 활용해보세요.</p>
+            </div>
           </div>
         )}
 
@@ -922,16 +1222,24 @@ function ApostilleTab() {
 function ApostilleResult({ info }) {
   const ok = info.is_member;
   return (
-    <div className={`rounded-xl border p-4 sm:p-5 ${ok ? "bg-emerald-50 border-emerald-300" : "bg-amber-50 border-amber-300"}`}>
+    <div className={`rounded-xl border p-4 sm:p-5 mt-3 ${ok ? "bg-emerald-50 border-emerald-300" : "bg-amber-50 border-amber-300"}`}>
       {/* 헤더 */}
-      <div className="flex items-center gap-2.5 sm:gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-3">
         {ok
           ? <CheckCircle2 size={28} className="text-emerald-500 flex-shrink-0" />
           : <XCircle     size={28} className="text-amber-500 flex-shrink-0" />}
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h4 className={`text-lg sm:text-xl font-black ${ok ? "text-emerald-800" : "text-amber-800"} truncate`}>{info.country_ko || "—"}</h4>
-            {info.country_en && <span className="text-xs sm:text-sm text-gray-500">({info.country_en})</span>}
+            {info.flag && <span className="text-2xl leading-none">{info.flag}</span>}
+            <h4 className={`text-lg sm:text-xl font-black ${ok ? "text-emerald-800" : "text-amber-800"}`}>
+              {info.country_ko || "—"}
+            </h4>
+            {info.country_en && (
+              <span className="text-xs sm:text-sm text-gray-500">({info.country_en})</span>
+            )}
+            {info.cca2 && (
+              <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-mono">{info.cca2}</span>
+            )}
           </div>
           <span className={`inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold ${ok ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
             {ok ? "✅ 아포스티유 협약 가입국" : "❌ 아포스티유 협약 미가입국"}
@@ -940,13 +1248,17 @@ function ApostilleResult({ info }) {
       </div>
 
       {/* 상세 정보 */}
-      <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-600 mb-3">
-        {info.join_date   && <span><strong>가입일:</strong> {info.join_date}</span>}
-        {info.authority   && <span><strong>권한기관:</strong> {info.authority}</span>}
-        {info.search_date && <span><strong>조회 기준일:</strong> {info.search_date}</span>}
-      </div>
+      {(info.join_date || info.search_date) && (
+        <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-gray-600 mb-3">
+          {info.join_date && <span><strong>협약 가입일:</strong> {info.join_date}</span>}
+          {info.search_date && <span className="text-gray-400">조회일: {info.search_date}</span>}
+        </div>
+      )}
       {info.note && (
-        <div className="bg-white/60 border rounded p-2 text-xs text-gray-700 mb-3">⚠️ {info.note}</div>
+        <div className="bg-white/70 border rounded-lg p-2.5 text-xs text-gray-700 mb-3 flex items-start gap-1.5">
+          <span className="flex-shrink-0">⚠️</span>
+          <span>{info.note}</span>
+        </div>
       )}
 
       {/* 처리 방법 */}
@@ -970,12 +1282,14 @@ function ApostilleResult({ info }) {
         </div>
       )}
 
-      <p className="text-xs text-gray-400 mt-3 text-right">
-        * AI 웹검색 결과입니다. 최종 확인은 apostille.go.kr 또는 관할 교육청에서 하시기 바랍니다.
+      <p className="text-[10px] text-gray-400 mt-3 flex items-center gap-1">
+        <span>📊</span>
+        <span>HCCH 자체 내장 데이터 · REST Countries API 국가명 조회 · 최종 확인은 <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="underline">apostille.go.kr</a>에서 하세요.</span>
       </p>
     </div>
   );
 }
+
 
 // ╔══════════════════════════════════════════════════════╗
 // ║  나이스 가이드 탭                                    ║
