@@ -13,13 +13,8 @@ JSON 외의 텍스트나 마크다운 코드블록을 절대 추가하지 마세
   "search_date": "조회 기준 날짜 YYYY-MM-DD(모르면 null)"
 }`;
 
-function json(payload, status = 200) {
-  return Response.json(payload, {
-    status,
-    headers: {
-      "Cache-Control": "no-store"
-    }
-  });
+function sendJson(res, status, payload) {
+  res.status(status).json(payload);
 }
 
 function extractJson(text) {
@@ -34,21 +29,51 @@ function extractJson(text) {
   }
 }
 
-export function GET() {
-  return json({ ok: true, message: "apostille api is running" });
+function getCountry(req) {
+  if (req.method === "GET") {
+    return String(req.query?.country || "").trim();
+  }
+
+  if (req.body && typeof req.body === "object") {
+    return String(req.body.country || "").trim();
+  }
+
+  if (typeof req.body === "string") {
+    const body = JSON.parse(req.body || "{}");
+    return String(body.country || "").trim();
+  }
+
+  return "";
 }
 
-export async function POST(request) {
+export default async function handler(req, res) {
   try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      return json({ error: "Vercel 환경변수 ANTHROPIC_API_KEY가 설정되지 않았습니다." }, 500);
+    if (req.method === "GET") {
+      const country = getCountry(req);
+      if (!country) {
+        return sendJson(res, 200, {
+          ok: true,
+          message: "apostille api is running",
+          usage: "POST /api/apostille with JSON body: { \"country\": \"국가명\" }"
+        });
+      }
     }
 
-    const body = await request.json().catch(() => ({}));
-    const country = String(body.country || "").trim();
+    if (req.method !== "POST" && req.method !== "GET") {
+      res.setHeader("Allow", "GET, POST");
+      return sendJson(res, 405, { error: "GET 또는 POST 요청만 지원합니다." });
+    }
+
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return sendJson(res, 500, {
+        error: "Vercel 환경변수 ANTHROPIC_API_KEY가 설정되지 않았습니다."
+      });
+    }
+
+    const country = getCountry(req);
     if (!country) {
-      return json({ error: "조회할 국가명을 입력해 주세요." }, 400);
+      return sendJson(res, 400, { error: "조회할 국가명을 입력해 주세요." });
     }
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -77,10 +102,10 @@ export async function POST(request) {
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-      return json({
+      return sendJson(res, 502, {
         error: data?.error?.message || `Anthropic API 오류: HTTP ${response.status}`,
         upstreamStatus: response.status
-      }, 502);
+      });
     }
 
     const text = (data?.content || [])
@@ -90,17 +115,17 @@ export async function POST(request) {
       .trim();
 
     if (!text) {
-      return json({
+      return sendJson(res, 502, {
         error: "Anthropic 응답에 텍스트 결과가 없습니다.",
         stopReason: data?.stop_reason || null
-      }, 502);
+      });
     }
 
-    return json({ result: extractJson(text) });
+    return sendJson(res, 200, { result: extractJson(text) });
   } catch (error) {
-    return json({
+    return sendJson(res, 500, {
       error: error?.message || "아포스티유 조회 중 오류가 발생했습니다."
-    }, 500);
+    });
   }
 }
 ```
