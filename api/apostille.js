@@ -13,8 +13,6 @@ JSON 외의 텍스트나 마크다운 코드블록을 절대 추가하지 마세
   "search_date": "조회 기준 날짜 YYYY-MM-DD(모르면 null)"
 }`;
 
-export const maxDuration = 30;
-
 function sendJson(res, status, payload) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -40,7 +38,7 @@ function extractJson(text) {
   }
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return sendJson(res, 405, { error: "POST 요청만 지원합니다." });
@@ -116,4 +114,6 @@ export default async function handler(req, res) {
     });
   }
 }
+
+module.exports = handler;
 ```
