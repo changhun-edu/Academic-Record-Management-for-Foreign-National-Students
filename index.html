@@ -777,8 +777,18 @@ function ApostilleTab() {
         })
       });
 
-      const data = await resp.json().catch(() => null);
-      if (!resp.ok) throw new Error(data?.error || `HTTP ${resp.status}`);
+      const raw = await resp.text();
+      let data = null;
+      try {
+        data = raw ? JSON.parse(raw) : null;
+      } catch {
+        data = null;
+      }
+
+      if (!resp.ok) {
+        const detail = data?.error || raw?.slice(0, 160) || `HTTP ${resp.status}`;
+        throw new Error(detail);
+      }
       const info = data?.result;
       if (!info) throw new Error("조회 결과가 비어 있습니다.");
 
