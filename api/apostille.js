@@ -13,8 +13,13 @@ JSON 외의 텍스트나 마크다운 코드블록을 절대 추가하지 마세
   "search_date": "조회 기준 날짜 YYYY-MM-DD(모르면 null)"
 }`;
 
-function sendJson(res, status, payload) {
-  res.status(status).json(payload);
+function json(payload, status = 200) {
+  return Response.json(payload, {
+    status,
+    headers: {
+      "Cache-Control": "no-store"
+    }
+  });
 }
 
 function extractJson(text) {
@@ -29,29 +34,23 @@ function extractJson(text) {
   }
 }
 
-function getCountry(req) {
-  if (req.method === "GET") {
-    return String(req.query?.country || "").trim();
+async function readCountry(request) {
+  const url = new URL(request.url);
+
+  if (request.method === "GET") {
+    return url.searchParams.get("country")?.trim() || "";
   }
 
-  if (req.body && typeof req.body === "object") {
-    return String(req.body.country || "").trim();
-  }
-
-  if (typeof req.body === "string") {
-    const body = JSON.parse(req.body || "{}");
-    return String(body.country || "").trim();
-  }
-
-  return "";
+  const body = await request.json().catch(() => ({}));
+  return String(body.country || "").trim();
 }
 
-export default async function handler(req, res) {
+async function handle(request) {
   try {
-    if (req.method === "GET") {
-      const country = getCountry(req);
+    if (request.method === "GET") {
+      const country = await readCountry(request);
       if (!country) {
-        return sendJson(res, 200, {
+        return json({
           ok: true,
           message: "apostille api is running",
           usage: "POST /api/apostille with JSON body: { \"country\": \"국가명\" }"
@@ -59,21 +58,20 @@ export default async function handler(req, res) {
       }
     }
 
-    if (req.method !== "POST" && req.method !== "GET") {
-      res.setHeader("Allow", "GET, POST");
-      return sendJson(res, 405, { error: "GET 또는 POST 요청만 지원합니다." });
+    if (request.method !== "POST" && request.method !== "GET") {
+      return json({ error: "GET 또는 POST 요청만 지원합니다." }, 405);
     }
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
-      return sendJson(res, 500, {
+      return json({
         error: "Vercel 환경변수 ANTHROPIC_API_KEY가 설정되지 않았습니다."
-      });
+      }, 500);
     }
 
-    const country = getCountry(req);
+    const country = await readCountry(request);
     if (!country) {
-      return sendJson(res, 400, { error: "조회할 국가명을 입력해 주세요." });
+      return json({ error: "조회할 국가명을 입력해 주세요." }, 400);
     }
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -102,10 +100,10 @@ export default async function handler(req, res) {
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-      return sendJson(res, 502, {
+      return json({
         error: data?.error?.message || `Anthropic API 오류: HTTP ${response.status}`,
         upstreamStatus: response.status
-      });
+      }, 502);
     }
 
     const text = (data?.content || [])
@@ -115,17 +113,21 @@ export default async function handler(req, res) {
       .trim();
 
     if (!text) {
-      return sendJson(res, 502, {
+      return json({
         error: "Anthropic 응답에 텍스트 결과가 없습니다.",
         stopReason: data?.stop_reason || null
-      });
+      }, 502);
     }
 
-    return sendJson(res, 200, { result: extractJson(text) });
+    return json({ result: extractJson(text) });
   } catch (error) {
-    return sendJson(res, 500, {
+    return json({
       error: error?.message || "아포스티유 조회 중 오류가 발생했습니다."
-    });
+    }, 500);
   }
 }
+
+export default handle;
+export const GET = handle;
+export const POST = handle;
 ```
