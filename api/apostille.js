@@ -1,5 +1,3 @@
-수정된 [apostille.js](C:/Users/user/Desktop/api/apostille.js:1) 전체입니다.
-
 ```js
 const APOSTILLE_SYSTEM_PROMPT = `당신은 대한민국 초등학교 학적 담당자를 돕는 전문 보조 AI입니다.
 사용자가 입력한 국가가 헤이그 협약(아포스티유, Apostille Convention)에 가입되어 있는지 웹 검색을 통해 최신 정보를 확인하고, 다음 JSON 형식으로만 답하세요.
@@ -15,11 +13,25 @@ JSON 외의 텍스트나 마크다운 코드블록을 절대 추가하지 마세
   "search_date": "조회 기준 날짜 YYYY-MM-DD(모르면 null)"
 }`;
 
+export const config = {
+  maxDuration: 30
+};
+
 function sendJson(res, status, payload) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
   res.end(JSON.stringify(payload));
+}
+
+async function readBody(req) {
+  if (req.body && typeof req.body === "object") return req.body;
+  if (typeof req.body === "string") return JSON.parse(req.body || "{}");
+
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  const raw = Buffer.concat(chunks).toString("utf8").trim();
+  return raw ? JSON.parse(raw) : {};
 }
 
 function extractJson(text) {
@@ -45,7 +57,14 @@ export default async function handler(req, res) {
     return sendJson(res, 500, { error: "Vercel 환경변수 ANTHROPIC_API_KEY가 설정되지 않았습니다." });
   }
 
-  const country = String(req.body?.country || "").trim();
+  let body;
+  try {
+    body = await readBody(req);
+  } catch {
+    return sendJson(res, 400, { error: "요청 본문 JSON을 읽지 못했습니다." });
+  }
+
+  const country = String(body?.country || "").trim();
   if (!country) {
     return sendJson(res, 400, { error: "조회할 국가명을 입력해 주세요." });
   }
@@ -59,10 +78,15 @@ export default async function handler(req, res) {
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6",
         max_tokens: 1000,
         system: APOSTILLE_SYSTEM_PROMPT,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        tools: [{
+          type: "web_search_20250305",
+          name: "web_search",
+          max_uses: 3,
+          allowed_domains: ["hcch.net", "apostille.go.kr", "mofa.go.kr"]
+        }],
         messages: [{
           role: "user",
           content: `"${country}"이(가) 아포스티유(Apostille) 헤이그 협약 가입국인지 HCCH 공식 사이트(hcch.net) 또는 외교부 아포스티유 사이트(apostille.go.kr)에서 최신 정보를 검색해 확인해 주세요. 가입일, 권한기관 정보도 포함해 JSON으로만 답하세요.`
@@ -74,7 +98,7 @@ export default async function handler(req, res) {
 
     if (!anthropicResp.ok) {
       const message = data?.error?.message || `Anthropic API 오류: HTTP ${anthropicResp.status}`;
-      return sendJson(res, anthropicResp.status, { error: message });
+      return sendJson(res, 502, { error: message, upstreamStatus: anthropicResp.status });
     }
 
     const text = (data?.content || [])
@@ -83,10 +107,19 @@ export default async function handler(req, res) {
       .join("")
       .trim();
 
+    if (!text) {
+      return sendJson(res, 502, {
+        error: "Anthropic 응답에 텍스트 결과가 없습니다.",
+        stopReason: data?.stop_reason || null
+      });
+    }
+
     const result = extractJson(text);
     return sendJson(res, 200, { result });
   } catch (error) {
-    return sendJson(res, 500, { error: error.message || "아포스티유 조회 중 오류가 발생했습니다." });
+    return sendJson(res, 500, {
+      error: error.message || "아포스티유 조회 중 오류가 발생했습니다."
+    });
   }
 }
 ```
