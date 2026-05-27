@@ -1118,7 +1118,11 @@ function ApostilleTab() {
       {/* 검색 카드 */}
       <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200 shadow-sm">
         <h3 className="text-sm sm:text-base font-bold mb-0.5 text-gray-800 flex items-center gap-2"><Search size={15} />국가별 협약 가입 여부 조회</h3>
-        <p className="text-xs text-gray-400 mb-4">한국어 또는 영어 국가명을 입력하세요. 내장 데이터로 즉시 조회됩니다.</p>
+        <p className="text-xs text-gray-400 mb-2">한국어 또는 영어 국가명을 입력하세요. 내장 데이터로 즉시 조회됩니다.</p>
+        <div className="flex items-start gap-1.5 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4">
+          <AlertCircle size={13} className="text-amber-500 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-700">내장 데이터는 <strong>2026년 5월 기준</strong>으로 작성되었습니다. 이후 신규 가입국이 생길 수 있으므로, 최신 현황은 <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="underline font-semibold">외교부 아포스티유 홈페이지</a>에서 추가 확인하시기 바랍니다.</p>
+        </div>
 
         <div className="flex gap-2 mb-3">
           <input
@@ -1215,6 +1219,25 @@ function ApostilleTab() {
           </a>
         </div>
       </div>
+
+      {/* 증명서 검증 */}
+      <a
+        href="https://www.apostille.go.kr/index.do"
+        target="_blank"
+        rel="noreferrer"
+        className="flex items-center justify-between bg-white hover:bg-rose-50 active:scale-[0.99] transition-all border border-rose-200 rounded-xl p-4 sm:p-5 shadow-sm group"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-rose-200 transition-colors">
+            <CheckCircle2 size={20} className="text-rose-600" />
+          </div>
+          <div>
+            <p className="font-bold text-sm text-gray-800 group-hover:text-rose-700 transition-colors">아포스티유 증명서 검증</p>
+            <p className="text-xs text-gray-500 mt-0.5">외교부 공식 사이트에서 발급된 아포스티유의 진위를 확인합니다</p>
+          </div>
+        </div>
+        <ExternalLink size={16} className="text-rose-400 flex-shrink-0 ml-3 group-hover:text-rose-600 transition-colors" />
+      </a>
     </>
   );
 }
