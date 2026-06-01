@@ -15,31 +15,178 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .animate-spin { animation: spin 1s linear infinite; }
     * { -webkit-tap-highlight-color: transparent; }
-    html,body { font-family:'Noto Sans KR',sans-serif; }
+
+    /* ── 폰트 ── */
+    html, body, * { font-family: 'Noto Sans KR', sans-serif !important; }
+
+    /* ── 디자인 토큰 ── */
     :root {
-      --brand:#1e40af; --brand-light:#eff6ff; --brand-mid:#bfdbfe; --brand-dark:#1e3a8a;
-      --success:#16a34a; --success-light:#f0fdf4; --success-mid:#bbf7d0;
-      --danger:#dc2626;  --danger-light:#fef2f2; --danger-mid:#fca5a5;
-      --warn:#d97706;    --warn-light:#fffbeb;   --warn-mid:#fcd34d;
-      --surface:#fff; --bg:#f8fafc; --border:#e2e8f0;
-      --text-main:#0f172a; --text-sub:#475569; --text-muted:#94a3b8;
+      --brand:        #1e40af;
+      --brand-light:  #eff6ff;
+      --brand-mid:    #bfdbfe;
+      --brand-dark:   #1e3a8a;
+      --success:      #16a34a;
+      --success-light:#f0fdf4;
+      --danger:       #dc2626;
+      --danger-light: #fef2f2;
+      --warn:         #d97706;
+      --warn-light:   #fffbeb;
+      --border:       #e2e8f0;
+      --text-main:    #0f172a;
+      --text-sub:     #475569;
+      --text-muted:   #94a3b8;
     }
-    .ds-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
-    .ds-banner{background:linear-gradient(135deg,var(--brand-dark) 0%,var(--brand) 100%);border-radius:12px;padding:20px 24px;color:#fff;}
-    .ds-alert-danger{background:var(--danger-light);border-left:4px solid var(--danger);border-radius:0 8px 8px 0;padding:12px 16px;}
-    .ds-alert-warn{background:var(--warn-light);border-left:4px solid #f59e0b;border-radius:0 8px 8px 0;padding:10px 14px;}
-    .ds-alert-info{background:var(--brand-light);border-left:4px solid var(--brand);border-radius:0 8px 8px 0;padding:10px 14px;}
-    .ds-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;line-height:1.5;}
-    .ds-badge-brand{background:var(--brand);color:#fff;}
-    .ds-badge-success{background:var(--success);color:#fff;}
-    .ds-badge-danger{background:var(--danger);color:#fff;}
-    .ds-badge-warn{background:var(--warn);color:#fff;}
-    .ds-badge-gray{background:#64748b;color:#fff;}
-    .ds-badge-purple{background:#7c3aed;color:#fff;}
-    .ds-th{background:var(--brand-light);color:var(--brand-dark);font-weight:600;}
-    .ds-path{font-family:monospace;font-size:11px;background:var(--brand-light);border:1px solid var(--brand-mid);border-radius:6px;padding:5px 10px;color:var(--brand-dark);display:block;}
-    .ds-open{border-color:var(--brand-mid)!important;}
-    .ds-h::before{content:'';display:inline-block;width:3px;height:14px;background:var(--brand);border-radius:2px;margin-right:8px;vertical-align:middle;}
+
+    /* ── 색상 통일 덮어쓰기 ── */
+
+    /* 사이드바 */
+    .bg-indigo-900 { background-color: var(--brand-dark) !important; }
+    .bg-indigo-950 { background-color: rgba(0,0,0,0.2) !important; }
+    .bg-indigo-700, .hover\:bg-indigo-700:hover { background-color: var(--brand) !important; }
+    .bg-indigo-800, .hover\:bg-indigo-800:hover { background-color: rgba(255,255,255,0.08) !important; }
+    .text-indigo-200 { color: #bfdbfe !important; }
+    .text-indigo-400 { color: #93c5fd !important; }
+    .border-indigo-800 { border-color: rgba(255,255,255,0.1) !important; }
+
+    /* 메인 배경 */
+    .bg-gray-50 { background-color: #f8fafc !important; }
+
+    /* 홈 배너 */
+    .from-indigo-600 { --tw-gradient-from: var(--brand-dark) !important; }
+    .to-purple-600   { --tw-gradient-to: var(--brand) !important; }
+
+    /* 아포스티유 배너 */
+    .from-rose-600   { --tw-gradient-from: var(--brand-dark) !important; }
+    .to-orange-500   { --tw-gradient-to: var(--brand) !important; }
+
+    /* NEIS 배너 */
+    .from-blue-700   { --tw-gradient-from: var(--brand-dark) !important; }
+    .to-indigo-700   { --tw-gradient-to: var(--brand) !important; }
+
+    /* QnA 배너 */
+    .from-teal-600   { --tw-gradient-from: var(--brand-dark) !important; }
+    .to-cyan-600     { --tw-gradient-to: var(--brand) !important; }
+
+    /* 모든 탭 배너 공통 텍스트 */
+    .from-indigo-600 ~ *, .from-rose-600 ~ *, .from-blue-700 ~ *, .from-teal-600 ~ * { }
+    .text-indigo-100, .text-rose-100, .text-blue-100, .text-teal-100 {
+      color: rgba(255,255,255,0.82) !important;
+    }
+
+    /* 카드 통일 */
+    .rounded-2xl { border-radius: 12px !important; }
+    .bg-white.rounded-xl, .bg-white.rounded-2xl {
+      background: #fff;
+      border-radius: 12px !important;
+    }
+
+    /* 버튼/인터랙티브 요소 — indigo → brand */
+    .bg-indigo-600, .hover\:bg-indigo-600:hover { background-color: var(--brand) !important; }
+    .hover\:bg-indigo-700:hover { background-color: var(--brand-dark) !important; }
+    .bg-indigo-50  { background-color: var(--brand-light) !important; }
+    .border-indigo-500 { border-color: var(--brand) !important; }
+    .border-indigo-400 { border-color: var(--brand) !important; }
+    .border-indigo-300 { border-color: var(--brand-mid) !important; }
+    .border-indigo-200 { border-color: var(--brand-mid) !important; }
+    .border-indigo-100 { border-color: var(--brand-mid) !important; }
+    .text-indigo-600 { color: var(--brand) !important; }
+    .text-indigo-700 { color: var(--brand) !important; }
+    .text-indigo-800 { color: var(--brand-dark) !important; }
+    .text-indigo-900 { color: var(--brand-dark) !important; }
+    .text-indigo-500 { color: var(--brand) !important; }
+    .ring-indigo-400 { --tw-ring-color: var(--brand-mid) !important; }
+    .focus\:ring-indigo-400:focus { --tw-ring-color: var(--brand-mid) !important; }
+    .focus\:border-indigo-500:focus { border-color: var(--brand) !important; }
+    .accent-indigo-600 { accent-color: var(--brand) !important; }
+
+    /* 모바일 탭바 active */
+    .bg-indigo-600.rounded-t-full { background-color: var(--brand) !important; }
+
+    /* 체크리스트 진행바 */
+    .bg-indigo-500 { background-color: var(--brand) !important; }
+
+    /* 홈 카드 아이콘 배경 — 개별 색상 → 단일 brand-light */
+    .bg-indigo-100 { background-color: var(--brand-light) !important; }
+    .bg-green-100  { background-color: var(--brand-light) !important; }
+    .bg-yellow-100 { background-color: var(--brand-light) !important; }
+    .bg-rose-100   { background-color: var(--brand-light) !important; }
+    .text-green-600  { color: var(--brand) !important; }
+    .text-yellow-600 { color: var(--brand) !important; }
+    .text-rose-600   { color: var(--brand) !important; }
+
+    /* 아포스티유 검색 버튼 */
+    .bg-rose-600, .hover\:bg-rose-700:hover { background-color: var(--brand) !important; }
+    .focus\:ring-rose-400:focus { --tw-ring-color: var(--brand-mid) !important; }
+    .text-rose-400 { color: var(--brand) !important; }
+    .text-rose-500 { color: var(--brand) !important; }
+    .text-rose-600 { color: var(--brand) !important; }
+    .text-rose-700 { color: var(--brand) !important; }
+    .bg-rose-50    { background-color: var(--brand-light) !important; }
+    .border-rose-200, .border-rose-400 { border-color: var(--brand-mid) !important; }
+    .hover\:bg-rose-50:hover  { background-color: var(--brand-light) !important; }
+    .hover\:bg-rose-100:hover { background-color: var(--brand-light) !important; }
+    .hover\:bg-rose-200:hover { background-color: var(--brand-mid) !important; }
+
+    /* NEIS 뱃지 색상 통일 */
+    /* 인적사항 blue → brand */
+    .bg-blue-200 { background-color: var(--brand-mid) !important; }
+    .text-blue-900 { color: var(--brand-dark) !important; }
+    /* 입학취학 indigo → brand (already covered) */
+    /* 면제 red → danger (keep) */
+    /* 편입학 emerald → success */
+    .bg-emerald-200 { background-color: #bbf7d0 !important; }
+    .text-emerald-900 { color: #14532d !important; }
+    /* 수정정정 amber → warn (keep) */
+    /* 학생부 violet → gray */
+    .bg-violet-200 { background-color: #e5e7eb !important; }
+    .text-violet-900 { color: #374151 !important; }
+
+    /* 오렌지 계열 (학력증명곤란) → warn */
+    .border-orange-500 { border-color: var(--warn) !important; }
+    .bg-orange-50  { background-color: var(--warn-light) !important; }
+    .text-orange-800 { color: #92400e !important; }
+
+    /* 아코디언 NEIS 열림 테두리 */
+    .border-indigo-300 { border-color: var(--brand-mid) !important; }
+
+    /* QnA 배너 링크 색 */
+    .text-teal-100 { color: rgba(255,255,255,0.82) !important; }
+
+    /* 헤더 "초등 전용" 뱃지 */
+    .bg-yellow-100 { background-color: var(--warn-light) !important; }
+    .text-yellow-800 { color: #92400e !important; }
+    /* GraduationCap 아이콘 유지 */
+    .text-yellow-400, .text-yellow-500 { color: #fbbf24 !important; }
+
+    /* 결과 카드 (아포스티유) */
+    .bg-emerald-50   { background-color: var(--success-light) !important; }
+    .border-emerald-300 { border-color: #86efac !important; }
+    .text-emerald-500 { color: var(--success) !important; }
+    .text-emerald-800 { color: #166534 !important; }
+    .bg-emerald-100  { background-color: #dcfce7 !important; }
+    .border-emerald-200 { border-color: #86efac !important; }
+    .bg-emerald-700  { background-color: var(--success) !important; }
+
+    /* 계산기 결과 */
+    .text-blue-50 { background-color: var(--brand-light) !important; }
+    .bg-blue-50   { background-color: var(--brand-light) !important; }
+    .border-blue-200 { border-color: var(--brand-mid) !important; }
+    .text-blue-800   { color: var(--brand-dark) !important; }
+
+    /* 알림 배너 */
+    .bg-red-50     { background-color: var(--danger-light) !important; }
+    .border-red-500 { border-color: var(--danger) !important; }
+    .text-red-800  { color: #7f1d1d !important; }
+    .text-red-700  { color: #7f1d1d !important; }
+    .text-red-500  { color: var(--danger) !important; }
+
+    /* 일반 텍스트 */
+    .text-gray-800 { color: var(--text-main) !important; }
+    .text-gray-700 { color: var(--text-sub) !important; }
+    .text-gray-600 { color: var(--text-sub) !important; }
+    .text-gray-500 { color: var(--text-muted) !important; }
+    .text-gray-400 { color: var(--text-muted) !important; }
+    .border-gray-200 { border-color: var(--border) !important; }
   </style>
 </head>
 <body>
@@ -118,7 +265,7 @@ const TABS = [
 // ── 사이드바 컴포넌트 (App 외부 정의 — 내부 정의 시 매 렌더마다 리마운트됨) ──
 function Sidebar({ mobile, activeTab, onNavigate }) {
   return (
-    <aside className={`${mobile ? "w-72" : "w-60"} text-white flex flex-col justify-between h-full`} style={{background:"var(--brand-dark)"}}>
+    <aside className={`${mobile ? "w-72" : "w-60"} bg-indigo-900 text-white flex flex-col justify-between h-full`}>
       <div className="p-5 overflow-y-auto">
         <button onClick={() => onNavigate("home")} className="flex items-center gap-2 mb-7 hover:opacity-80 transition-opacity w-full text-left">
           <GraduationCap size={22} className="text-yellow-400 flex-shrink-0" />
@@ -129,17 +276,17 @@ function Sidebar({ mobile, activeTab, onNavigate }) {
             <button key={id} onClick={() => onNavigate(id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
                 ${activeTab === id
-                  ? "text-white"
-                  : "text-blue-200"}`} style={activeTab===id?{background:"var(--brand)"}:{}} onMouseEnter={e=>{if(activeTab!==id)e.currentTarget.style.background="rgba(255,255,255,0.08)";}} onMouseLeave={e=>{if(activeTab!==id)e.currentTarget.style.background="";}}>
+                  ? "bg-indigo-700 text-white shadow-inner"
+                  : "text-indigo-200 hover:bg-indigo-800 hover:text-white"}`}>
               <Icon size={16} className="flex-shrink-0" />
               <span>{label}</span>
             </button>
           ))}
         </nav>
       </div>
-      <div className="p-4 text-xs text-center flex-shrink-0" style={{background:"rgba(0,0,0,0.2)",borderTop:"1px solid rgba(255,255,255,0.1)"}}>
-        <p style={{color:"#93c5fd"}}>교육부·17개 시도교육청 자료 기반</p>
-        <p className="mt-1 select-none" style={{fontSize:"10px",color:"rgba(147,197,253,0.3)"}}>만든이 2026 최창훈</p>
+      <div className="p-4 text-xs text-indigo-400 text-center border-t border-indigo-800 flex-shrink-0">
+        <p>교육부·17개 시도교육청 자료 기반</p>
+        <p className="text-[10px] text-indigo-300/30 mt-1 select-none">만든이 2026 최창훈</p>
       </div>
     </aside>
   );
@@ -169,7 +316,7 @@ function App() {
   }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{background:"var(--bg)",fontFamily:"'Noto Sans KR',sans-serif",color:"var(--text-main)"}}>
+    <div className="flex h-screen overflow-hidden bg-gray-50">
 
       {/* ── 데스크톱 사이드바 (lg 이상) ── */}
       <div className="hidden lg:flex flex-col flex-shrink-0 shadow-xl">
@@ -196,10 +343,10 @@ function App() {
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
 
         {/* 헤더 */}
-        <header className="bg-white px-4 sm:px-6 py-3 flex items-center gap-3 flex-shrink-0" style={{borderBottom:"1px solid var(--border)"}}>
+        <header className="bg-white shadow-sm px-4 sm:px-6 py-3 flex items-center gap-3 border-b border-gray-200 flex-shrink-0">
           <button
             onClick={() => setDrawerOpen(true)}
-            className="lg:hidden flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors" style={{color:"var(--text-sub)"}}
+            className="lg:hidden flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-600"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
@@ -207,8 +354,8 @@ function App() {
           </button>
           <GraduationCap size={18} className="lg:hidden text-yellow-500 flex-shrink-0" />
           <div className="flex items-center gap-2 min-w-0">
-            <span className="hidden sm:inline text-xs px-2 py-0.5 rounded-full font-bold whitespace-nowrap flex-shrink-0" style={{background:"var(--warn-light)",color:"#92400e"}}>초등 전용</span>
-            <h2 className="text-sm sm:text-base font-bold truncate" style={{color:"var(--text-main)"}}>{TAB_TITLES[activeTab]}</h2>
+            <span className="hidden sm:inline bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full font-bold whitespace-nowrap flex-shrink-0">초등 전용</span>
+            <h2 className="text-sm sm:text-base font-bold text-gray-800 truncate">{TAB_TITLES[activeTab]}</h2>
           </div>
         </header>
 
@@ -226,20 +373,23 @@ function App() {
         </main>
 
         {/* ── 모바일 하단 탭바 ── */}
-        <nav className="lg:hidden flex-shrink-0 bg-white" style={{borderTop:"1px solid var(--border)",boxShadow:"0 -2px 8px rgba(0,0,0,0.06)"}}>
+        <nav className="lg:hidden flex-shrink-0 bg-white border-t border-gray-200 shadow-[0_-2px_8px_rgba(0,0,0,0.06)]">
           <div className="flex">
             {TABS.slice(0, 5).map(({ id, Icon }) => (
               <button key={id} onClick={() => navigate(id)}
-                className="relative flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-colors min-w-0" style={{color:activeTab===id?"var(--brand)":"var(--text-muted)"}}>
+                className={`relative flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-colors min-w-0
+                  ${activeTab === id ? "text-indigo-700" : "text-gray-400 hover:text-gray-600"}`}>
                 <Icon size={19} />
-                <span className="text-[9px] font-semibold leading-tight truncate w-full text-center px-0.5">
+                <span className={`text-[9px] font-semibold leading-tight truncate w-full text-center px-0.5
+                  ${activeTab === id ? "text-indigo-700" : "text-gray-400"}`}>
                   {id === "home" ? "홈" : id === "wizard" ? "판별기" : id === "checklist" ? "서류" : id === "calculator" ? "학년계산" : "아포스티유"}
                 </span>
-                {activeTab === id && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-t-full" style={{background:"var(--brand)"}} />}
+                {activeTab === id && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-indigo-600 rounded-t-full" />}
               </button>
             ))}
             <button onClick={() => setDrawerOpen(true)}
-              className="relative flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-colors" style={{color:(activeTab==="neis"||activeTab==="qna")?"var(--brand)":"var(--text-muted)"}}>
+              className={`relative flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-colors
+                ${(activeTab === "neis" || activeTab === "qna") ? "text-indigo-700" : "text-gray-400 hover:text-gray-600"}`}>
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/>
                 <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
@@ -247,7 +397,7 @@ function App() {
               </svg>
               <span className="text-[9px] font-semibold">더보기</span>
               {(activeTab === "neis" || activeTab === "qna") && (
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-t-full" style={{background:"var(--brand)"}} />
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-indigo-600 rounded-t-full" />
               )}
             </button>
           </div>
@@ -263,26 +413,26 @@ function App() {
 // ╚══════════════════════════════════════════════════════╝
 function HomeTab({ onNav }) {
   const cards = [
-    { id: "wizard",     Icon: Network,     title: "입학? 취학? 편입학?", desc: "클릭 몇 번으로 올바른 학적 행정 용어를 판별합니다." },
-    { id: "checklist",  Icon: FolderOpen,  title: "맞춤 서류 체크",     desc: "미등록 이주아동, 일반 외국인 등 상태별 구비서류를 확인하세요." },
-    { id: "calculator", Icon: ListOrdered, title: "학년 배정 계산기",    desc: "누적 학기 수 기준으로 적정 학년을 도출합니다." },
-    { id: "apostille",  Icon: Stamp,       title: "아포스티유 협약국",  desc: "국가명으로 협약 가입 여부를 실시간 조회합니다." },
+    { id: "wizard",     Icon: Network,    bg: "bg-indigo-100", ic: "text-indigo-600", title: "입학? 취학? 편입학?", desc: "클릭 몇 번으로 올바른 학적 행정 용어를 판별합니다." },
+    { id: "checklist",  Icon: FolderOpen, bg: "bg-green-100",  ic: "text-green-600",  title: "맞춤 서류 체크",     desc: "미등록 이주아동, 일반 외국인 등 상태별 구비서류를 확인하세요." },
+    { id: "calculator", Icon: ListOrdered,bg: "bg-yellow-100", ic: "text-yellow-600", title: "학년 배정 계산기",    desc: "누적 학기 수 기준으로 적정 학년을 도출합니다." },
+    { id: "apostille",  Icon: Stamp,      bg: "bg-rose-100",   ic: "text-rose-600",   title: "아포스티유 협약국",  desc: "국가명으로 협약 가입 여부를 실시간 조회합니다." },
   ];
   return (
     <>
-      <div className="ds-banner">
-        <h3 className="text-base sm:text-xl font-bold mb-1.5 flex items-center gap-2"><GraduationCap size={18}/>외국 국적 학생 학적 업무, 핵심만 정확하게!</h3>
-        <p className="text-xs sm:text-sm leading-relaxed" style={{color:"rgba(255,255,255,0.82)"}}>
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-4 sm:p-6 text-white shadow-md">
+        <h3 className="text-base sm:text-xl font-bold mb-1.5">외국 국적 학생 학적 업무, 핵심만 정확하게!</h3>
+        <p className="text-indigo-100 text-xs sm:text-sm leading-relaxed">
           국내 거주 모든 외국 국적 아동(미등록 이주아동·난민 포함)은 초등 의무교육 대상입니다.
           입교·서류 검토·나이스 입력을 빠르고 정확하게 처리하세요.
         </p>
       </div>
-      <div className="ds-alert-danger">
+      <div className="bg-red-50 border-l-4 border-red-500 p-3 sm:p-4 rounded-r-lg shadow-sm">
         <div className="flex items-start gap-2.5">
-          <AlertCircle size={16} className="flex-shrink-0 mt-0.5" style={{color:"var(--danger)"}} />
+          <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0" />
           <div>
-            <h4 className="font-bold text-sm mb-1" style={{color:"var(--danger)"}}>가장 많이 틀리는 핵심 주의사항</h4>
-            <p className="text-sm leading-relaxed" style={{color:"#7f1d1d"}}>
+            <h4 className="font-bold text-red-800 text-xs sm:text-sm">⚠️ 가장 많이 틀리는 핵심 주의사항!</h4>
+            <p className="text-xs text-red-700 mt-1 leading-relaxed">
               외국 국적 학생이 본국 귀국 등으로 학업을 중단할 때는 <strong>'유예'가 아닌 '면제'</strong> 처리가 원칙입니다.
               또한 이들은 <strong>의무교육관리위원회 심의 대상이 아닙니다.</strong>
             </p>
@@ -290,14 +440,12 @@ function HomeTab({ onNav }) {
         </div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {cards.map(({ id, Icon, title, desc }) => (
+        {cards.map(({ id, Icon, bg, ic, title, desc }) => (
           <button key={id} onClick={() => onNav(id)}
-            className="ds-card p-3 sm:p-4 text-left hover:shadow-md active:scale-95 transition-all">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style={{background:"var(--brand-light)"}}>
-              <Icon size={17} style={{color:"var(--brand)"}} />
-            </div>
-            <h4 className="font-bold text-xs sm:text-sm mb-1" style={{color:"var(--text-main)"}}>{title}</h4>
-            <p className="text-xs leading-relaxed hidden sm:block" style={{color:"var(--text-muted)"}}>{desc}</p>
+            className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md active:scale-95 text-left transition-all">
+            <div className={`w-8 h-8 sm:w-9 sm:h-9 ${bg} rounded-lg flex items-center justify-center ${ic} mb-2 sm:mb-3`}><Icon size={16} /></div>
+            <h4 className="font-bold text-gray-800 text-xs sm:text-sm mb-0.5 sm:mb-1">{title}</h4>
+            <p className="text-[10px] sm:text-xs text-gray-500 leading-relaxed hidden sm:block">{desc}</p>
           </button>
         ))}
       </div>
@@ -314,8 +462,9 @@ function RadioGroup({ name, value, onChange, options }) {
   return (
     <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
       {options.map(o => (
-        <label key={o.value} className="flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-lg border text-sm transition-all" style={value===o.value?{background:"var(--brand-light)",borderColor:"var(--brand)",color:"var(--brand-dark)",fontWeight:600}:{background:"var(--bg)",borderColor:"var(--border)",color:"var(--text-sub)"}}>
-          <input type="radio" name={name} value={o.value} checked={value === o.value} onChange={() => onChange(o.value)} className="flex-shrink-0" style={{accentColor:"var(--brand)"}} />
+        <label key={o.value} className={`flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-lg border text-sm transition-all
+          ${value === o.value ? "bg-indigo-50 border-indigo-400 text-indigo-800 font-semibold" : "bg-gray-50 border-gray-200 hover:bg-gray-100"}`}>
+          <input type="radio" name={name} value={o.value} checked={value === o.value} onChange={() => onChange(o.value)} className="accent-indigo-600 flex-shrink-0" />
           {o.label}
         </label>
       ))}
@@ -335,8 +484,8 @@ function WizardTab() {
   })();
 
   return (
-    <div className="ds-card p-4 sm:p-6 space-y-5">
-      <h3 className="text-sm sm:text-base font-bold flex items-center gap-2" style={{color:"var(--brand-dark)"}}><Wand2 size={15} />질문에 답하며 학생의 입교 유형을 확인하세요</h3>
+    <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200 shadow-sm space-y-5">
+      <h3 className="text-sm sm:text-base font-bold text-indigo-900 flex items-center gap-2"><Wand2 size={15} />질문에 답하며 학생의 입교 유형을 확인하세요</h3>
       <div className="border-b pb-5">
         <p className="font-semibold text-gray-700 text-sm mb-3">1. 학생이 국내 초등학교에 입학했거나 다녔던 이력이 있습니까?</p>
         <RadioGroup name="q1" value={q1} onChange={v => { setQ1(v); setQ2(null); }} options={[
@@ -354,10 +503,10 @@ function WizardTab() {
         </div>
       )}
       {result && (
-        <div className="p-5 rounded-xl border" style={{background:"var(--brand-light)",borderColor:"var(--brand-mid)"}}>
-          <span className="text-xs uppercase font-bold tracking-wider" style={{color:"var(--brand)"}}>판별된 학적 용어</span>
-          <h4 className="text-xl font-black mt-1 mb-2" style={{color:"var(--brand-dark)"}}>{result.title}</h4>
-          <p className="text-sm leading-relaxed" style={{color:"var(--text-sub)"}}>{result.desc}</p>
+        <div className="p-5 bg-indigo-50 border border-indigo-200 rounded-xl">
+          <span className="text-xs uppercase font-bold tracking-wider text-indigo-500">판별된 학적 용어</span>
+          <h4 className="text-xl font-black text-indigo-900 mt-1 mb-2">{result.title}</h4>
+          <p className="text-sm text-indigo-700 leading-relaxed">{result.desc}</p>
         </div>
       )}
     </div>
@@ -378,39 +527,41 @@ function ChecklistTab() {
   const doneCount = Object.values(checked).filter(Boolean).length;
 
   return (
-    <div className="ds-card p-4 sm:p-6">
+    <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
-        <h3 className="text-sm sm:text-base font-bold" style={{color:"var(--text-main)"}}>학생 신분별 제출 서류 확인</h3>
+        <h3 className="text-sm sm:text-base font-bold text-gray-800">💡 학생 신분별 제출 서류 확인</h3>
         <select value={type} onChange={e => setType(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 outline-none w-full sm:w-auto">
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 outline-none w-full sm:w-auto">
           <option value="general">일반 외국인 등록 아동</option>
           <option value="unregistered">미등록 이주 아동 (외국인등록증 없음)</option>
         </select>
       </div>
       <div className="flex items-center gap-2 mb-4">
-        <div className="h-2 flex-1 rounded-full overflow-hidden" style={{background:"var(--border)"}}>
-          <div className="h-full rounded-full transition-all" style={{background:"var(--brand)"}} style={{ width: `${(doneCount / items.length) * 100}%` }} />
+        <div className="h-2 flex-1 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${(doneCount / items.length) * 100}%` }} />
         </div>
-        <span className="text-xs font-medium" style={{color:"var(--text-sub)"}}>{doneCount}/{items.length}</span>
+        <span className="text-xs text-gray-500 font-medium">{doneCount}/{items.length}</span>
       </div>
-      <p className="text-xs mb-3" style={{color:"var(--text-muted)"}}>* 국내외 발행 서류는 원본 대조가 원칙입니다.</p>
+      <p className="text-xs text-gray-400 mb-3">* 국내외 발행 서류는 원본 대조가 원칙입니다.</p>
       <div className="space-y-2">
         {items.map((item, i) => (
           <label key={i} onClick={() => toggle(i)}
-            className="flex items-start p-3.5 rounded-xl border cursor-pointer transition-all" style={checked[i]?{background:"var(--success-light)",borderColor:"var(--success-mid)"}:{background:"var(--bg)",borderColor:"var(--border)"}}>
-            <div className="w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5 mr-3 flex-shrink-0 transition-all" style={checked[i]?{background:"var(--success)",borderColor:"var(--success)"}:{borderColor:"var(--border)"}}>
+            className={`flex items-start p-3 rounded-lg border cursor-pointer transition-all
+              ${checked[i] ? "bg-green-50 border-green-300" : "bg-gray-50 border-gray-200 hover:bg-gray-100"}`}>
+            <div className={`w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5 mr-3 flex-shrink-0 transition-all
+              ${checked[i] ? "bg-green-500 border-green-500" : "border-gray-300"}`}>
               {checked[i] && <span className="text-white text-xs font-bold">✓</span>}
             </div>
             <div>
-              <p className={"font-semibold text-sm"} style={checked[i]?{color:"var(--success)",textDecoration:"line-through"}:{color:"var(--text-main)"}}>{item.name}</p>
-              <p className="text-xs mt-0.5" style={{color:"var(--text-muted)"}}>{item.desc}</p>
+              <p className={`font-semibold text-sm ${checked[i] ? "text-green-800 line-through" : "text-gray-800"}`}>{item.name}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
             </div>
           </label>
         ))}
       </div>
       {doneCount === items.length && (
-        <div className="mt-4 p-3 rounded-lg text-sm font-semibold text-center" style={{background:"var(--success-light)",borderColor:"var(--success-mid)",border:"1px solid",color:"var(--success)"}}>
-          모든 서류 확인 완료!
+        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800 font-semibold text-center">
+          ✅ 모든 서류 확인 완료!
         </div>
       )}
     </div>
@@ -554,16 +705,20 @@ function CalculatorTab() {
       {/* 모드 선택 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <button onClick={() => { setMode("doc"); setResult(null); }}
-          className="p-4 rounded-xl border-2 text-left transition-all" style={{borderColor:mode==="doc"?"var(--brand)":"var(--border)",background:mode==="doc"?"var(--brand-light)":"var(--surface)"}}>
-          <div className="text-sm font-bold mb-1" style={{color:mode==="doc"?"var(--brand-dark)":"var(--text-main)"}}>
-            학력증빙서류가 있는 경우
+          className={`p-4 rounded-xl border-2 text-left transition-all ${mode === "doc"
+            ? "border-indigo-500 bg-indigo-50"
+            : "border-gray-200 bg-white hover:border-gray-300"}`}>
+          <div className={`text-sm font-bold mb-1 ${mode === "doc" ? "text-indigo-800" : "text-gray-700"}`}>
+            📄 학력증빙서류가 있는 경우
           </div>
           <p className="text-xs text-gray-500">재학증명서·성적증명서로 외국 학제 기반 학년 산정</p>
         </button>
         <button onClick={() => { setMode("nodoc"); setResult(null); }}
-          className="p-4 rounded-xl border-2 text-left transition-all" style={{borderColor:mode==="nodoc"?"var(--brand)":"var(--border)",background:mode==="nodoc"?"var(--brand-light)":"var(--surface)"}}>
-          <div className="text-sm font-bold mb-1" style={{color:mode==="nodoc"?"var(--brand-dark)":"var(--text-main)"}}>
-            학력 증명이 곤란한 경우
+          className={`p-4 rounded-xl border-2 text-left transition-all ${mode === "nodoc"
+            ? "border-orange-500 bg-orange-50"
+            : "border-gray-200 bg-white hover:border-gray-300"}`}>
+          <div className={`text-sm font-bold mb-1 ${mode === "nodoc" ? "text-orange-800" : "text-gray-700"}`}>
+            ❓ 학력 증명이 곤란한 경우
           </div>
           <p className="text-xs text-gray-500">시도교육청 학력심의위원회 통한 학력 인정 및 학년 결정</p>
         </button>
@@ -571,22 +726,22 @@ function CalculatorTab() {
 
       {/* 학력 증명 곤란 안내 */}
       {mode === "nodoc" && (
-        <div className="ds-card p-5 space-y-3" style={{background:"var(--warn-light)",borderColor:"var(--warn-mid)"}}>
-          <h4 className="font-bold text-sm flex items-center gap-2" style={{color:"var(--warn)"}}>
+        <div className="bg-orange-50 border border-orange-200 rounded-xl p-5 space-y-3">
+          <h4 className="font-bold text-orange-800 text-sm flex items-center gap-2">
             <AlertCircle size={15} />학력 증명이 곤란한 경우 처리 절차
           </h4>
-          <div className="space-y-2 text-xs" style={{color:"#92400e"}}>
-            <div className="bg-white/70 rounded-lg p-3 border" style={{borderColor:"var(--warn-mid)"}}>
+          <div className="space-y-2 text-xs text-orange-800">
+            <div className="bg-white/70 rounded-lg p-3 border border-orange-200">
               <p className="font-semibold mb-1">① 시도교육청 학력심의위원회 심의</p>
-              <p className="text-xs" style={{color:"#92400e"}}>학력증빙서류를 제출하지 못하는 경우, 시도교육청별 학력심의위원회에서 학력 인정 및 학년 결정 (각 시도교육청별 상이하므로 교육청에 문의)</p>
+              <p className="text-orange-700">학력증빙서류를 제출하지 못하는 경우, 시도교육청별 학력심의위원회에서 학력 인정 및 학년 결정 (각 시도교육청별 상이하므로 교육청에 문의)</p>
             </div>
-            <div className="bg-white/70 rounded-lg p-3 border" style={{borderColor:"var(--warn-mid)"}}>
+            <div className="bg-white/70 rounded-lg p-3 border border-orange-200">
               <p className="font-semibold mb-1">② 학교 자체 학력인정 심의</p>
-              <p className="text-xs" style={{color:"#92400e"}}>학력증빙서류 없이도 학력인정이 가능한 학교의 경우 해당 학교 학력 심의를 통해 학력 인정 및 학년 결정</p>
+              <p className="text-orange-700">학력증빙서류 없이도 학력인정이 가능한 학교의 경우 해당 학교 학력 심의를 통해 학력 인정 및 학년 결정</p>
             </div>
-            <div className="rounded-lg p-3 border mt-1" style={{background:"#fef3c7",borderColor:"#f59e0b"}}>
-              <p className="font-semibold" style={{color:"#92400e"}}>유의사항</p>
-              <p className="mt-0.5" style={{color:"#92400e"}}>사이버학습, 가정 내 학습 기간 중 국내에서 1개월 이상 거주하거나 해당 기간의 성적을 증명할 수 없는 경우에는 외국 학교 교육기간으로 인정하지 않습니다.</p>
+            <div className="bg-amber-100 rounded-lg p-3 border border-amber-300 mt-1">
+              <p className="font-semibold text-amber-800">📌 유의사항</p>
+              <p className="text-amber-700 mt-0.5">사이버학습, 가정 내 학습 기간 중 국내에서 1개월 이상 거주하거나 해당 기간의 성적을 증명할 수 없는 경우에는 외국 학교 교육기간으로 인정하지 않습니다.</p>
             </div>
           </div>
         </div>
@@ -596,54 +751,54 @@ function CalculatorTab() {
       {mode === "doc" && (
         <>
           {/* 외국학제 환산표 토글 */}
-          <div className="ds-card overflow-hidden">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <button onClick={() => setShowTable(t => !t)}
               className="w-full flex justify-between items-center px-5 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-              <span>외국학제 → 한국학제 환산표</span>
-              <span className="text-xs flex items-center gap-1" style={{color:"var(--text-muted)"}}>{showTable ? <><ChevronUp size={13}/>접기</> : <><ChevronDown size={13}/>펼쳐보기</>}</span>
+              <span>📊 외국학제 → 한국학제 환산표</span>
+              <span className="text-gray-400 text-xs">{showTable ? "▲ 접기" : "▼ 펼쳐보기"}</span>
             </button>
             {showTable && (
               <div className="px-4 pb-4 overflow-x-auto -mx-1">
                 <div className="min-w-[480px]">
                 <table className="w-full text-xs border-collapse">
                   <thead>
-                    <tr>
-                      <th className="border border-gray-200 px-3 py-2 text-left font-semibold" style={{color:"var(--text-sub)"}}>학제</th>
-                      <th className="border border-gray-200 px-3 py-2 text-center ds-th font-semibold">초등</th>
-                      <th className="border border-gray-200 px-3 py-2 text-center font-semibold" style={{color:"#059669"}}>중학</th>
-                      <th className="border border-gray-200 px-3 py-2 text-center font-semibold" style={{color:"#7c3aed"}}>고등</th>
-                      <th className="border border-gray-200 px-3 py-2 text-left font-semibold" style={{color:"var(--text-muted)"}}>해당 국가(예)</th>
+                    <tr className="bg-indigo-50">
+                      <th className="border border-gray-200 px-3 py-2 text-left text-gray-700 font-semibold">학제</th>
+                      <th className="border border-gray-200 px-3 py-2 text-center text-indigo-700 font-semibold">초등</th>
+                      <th className="border border-gray-200 px-3 py-2 text-center text-green-700 font-semibold">중학</th>
+                      <th className="border border-gray-200 px-3 py-2 text-center text-purple-700 font-semibold">고등</th>
+                      <th className="border border-gray-200 px-3 py-2 text-left text-gray-500 font-semibold">해당 국가(예)</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr className="bg-gray-50 font-semibold">
-                      <td className="border border-gray-200 px-3 py-2" style={{color:"var(--text-main)"}}>{KR_ROW.label}</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center" style={{color:"var(--brand)"}}>{KR_ROW.elem}</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center" style={{color:"#059669"}}>{KR_ROW.mid}</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center" style={{color:"#7c3aed"}}>{KR_ROW.high}</td>
-                      <td className="border border-gray-200 px-3 py-2" style={{color:"var(--text-muted)"}}>—</td>
+                      <td className="border border-gray-200 px-3 py-2 text-gray-800">{KR_ROW.label}</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center text-indigo-700">{KR_ROW.elem}</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center text-green-700">{KR_ROW.mid}</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center text-purple-700">{KR_ROW.high}</td>
+                      <td className="border border-gray-200 px-3 py-2 text-gray-400">—</td>
                     </tr>
                     {TABLE_ROWS.map((r, i) => (
                       <tr key={i} className="hover:bg-blue-50">
-                        <td className="border border-gray-200 px-3 py-2 font-medium" style={{color:"var(--text-main)"}}>{r.label}</td>
-                        <td className="border border-gray-200 px-3 py-2 text-center" style={{color:"var(--brand)"}}>{r.elem}</td>
-                        <td className="border border-gray-200 px-3 py-2 text-center" style={{color:"#059669"}}>{r.mid}</td>
-                        <td className="border border-gray-200 px-3 py-2 text-center" style={{color:"#7c3aed"}}>{r.high}</td>
-                        <td className="border border-gray-200 px-3 py-2" style={{color:"var(--text-sub)"}}>{r.ex}</td>
+                        <td className="border border-gray-200 px-3 py-2 font-medium text-gray-800">{r.label}</td>
+                        <td className="border border-gray-200 px-3 py-2 text-center text-indigo-600">{r.elem}</td>
+                        <td className="border border-gray-200 px-3 py-2 text-center text-green-600">{r.mid}</td>
+                        <td className="border border-gray-200 px-3 py-2 text-center text-purple-600">{r.high}</td>
+                        <td className="border border-gray-200 px-3 py-2 text-gray-500">{r.ex}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                <p className="text-xs mt-2" style={{color:"var(--text-muted)"}}>※ 외국학교 재학증명서·성적증명서를 근거로 한국학제(12학년제)에 맞춰 계산합니다.</p>
+                <p className="text-xs text-gray-400 mt-2">※ 외국학교 재학증명서·성적증명서를 근거로 한국학제(12학년제)에 맞춰 계산합니다.</p>
                 </div>
               </div>
             )}
           </div>
 
           {/* 입력 폼 */}
-          <div className="ds-card p-4 sm:p-5">
-            <h3 className="text-xs sm:text-sm font-bold mb-4 flex items-center gap-2" style={{color:"var(--text-main)"}}>
-              <Calculator size={14} style={{color:"var(--brand)"}} />학년 산정 계산기
+          <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm">
+            <h3 className="text-xs sm:text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Calculator size={14} className="text-indigo-600" />학년 산정 계산기
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
               <div className="space-y-4">
@@ -651,13 +806,13 @@ function CalculatorTab() {
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 mb-1.5">출신국 학제 선택</label>
                   <select value={sysId} onChange={e => { setSysId(e.target.value); setResult(null); }}
-                    className="w-full border rounded-lg p-2.5 text-sm outline-none" style={{borderColor:"var(--border)",background:"var(--bg)"}}>
+                    className="w-full border border-gray-300 rounded-lg p-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none">
                     {FOREIGN_SYSTEMS.map(s => (
                       <option key={s.id} value={s.id}>{s.label} ({s.desc})</option>
                     ))}
                   </select>
                   {selectedSys && (
-                    <p className="text-xs mt-1 ml-1" style={{color:"var(--brand)"}}>
+                    <p className="text-xs text-indigo-600 mt-1 ml-1">
                       초등 {selectedSys.elem}년 / 중학 {selectedSys.mid}년 / 고등 {selectedSys.high}년
                     </p>
                   )}
@@ -669,7 +824,7 @@ function CalculatorTab() {
                   <input type="number" min="0" max="30"
                     placeholder="예: 4학기 이수 → 4"
                     value={sems} onChange={e => { setSems(e.target.value); setResult(null); }}
-                    className="w-full border rounded-lg p-2.5 text-sm outline-none" style={{borderColor:"var(--border)",background:"var(--bg)"}} />
+                    className="w-full border border-gray-300 rounded-lg p-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none" />
                   <p className="text-xs text-gray-400 mt-1 ml-1">1학기 = 6개월 / 1학년 = 2학기</p>
                 </div>
 
@@ -679,12 +834,12 @@ function CalculatorTab() {
                     생년월일 <span className="font-normal text-gray-400">(선택 — 연령 참고용)</span>
                   </label>
                   <input type="date" value={birth} onChange={e => { setBirth(e.target.value); setResult(null); }}
-                    className="w-full border rounded-lg p-2.5 text-sm outline-none" style={{borderColor:"var(--border)",background:"var(--bg)"}} />
+                    className="w-full border border-gray-300 rounded-lg p-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none" />
                 </div>
 
                 <div className="flex gap-2">
                   <button onClick={calculate}
-                    className="flex-1 text-white rounded-lg py-2.5 font-semibold text-sm shadow-sm" style={{background:"var(--brand)"}}>
+                    className="flex-1 bg-indigo-600 text-white rounded-lg py-2.5 font-semibold hover:bg-indigo-700 transition-colors text-sm shadow-sm">
                     학년 계산하기
                   </button>
                   {result && (
@@ -697,22 +852,22 @@ function CalculatorTab() {
               </div>
 
               {/* 결과 */}
-              <div className="p-5 rounded-xl border flex items-center justify-center min-h-[220px]" style={{background:"var(--bg)",borderStyle:"dashed",borderColor:"var(--border)"}}>
+              <div className="bg-gray-50 p-5 rounded-xl border border-dashed border-gray-300 flex items-center justify-center min-h-[220px]">
                 {!result ? (
-                  <div className="text-center" style={{color:"var(--text-muted)"}}>
+                  <div className="text-center text-gray-400">
                     <Calculator size={36} className="mx-auto mb-2 opacity-30" />
                     <p className="text-sm">정보를 입력하고 계산하세요.</p>
                   </div>
                 ) : (
                   <div className="w-full space-y-3">
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider" style={{color:"var(--brand)"}}>배정 권장 학년</span>
-                      <h4 className="text-2xl font-black mt-0.5" style={{color:"var(--brand-dark)"}}>
+                      <span className="text-xs font-bold text-indigo-500 uppercase tracking-wider">배정 권장 학년</span>
+                      <h4 className="text-2xl font-black text-gray-900 mt-0.5">
                         {result.info.school}{result.info.grade ? ` ${result.info.grade}학년` : ""}
                       </h4>
                     </div>
 
-                    <div className="space-y-1.5 text-xs" style={{color:"var(--text-sub)"}}>
+                    <div className="space-y-1.5 text-xs text-gray-600">
                       <p>• 외국 이수: <strong>{result.n}학기</strong>
                         {" → "}학제 환산 후 <strong>{result.krSem}학기</strong>
                       </p>
@@ -724,16 +879,16 @@ function CalculatorTab() {
 
                     {/* 1학기 부족 허용 안내 */}
                     {result.shortOneSem && result.flexApplicable && (
-                      <div className="rounded-lg p-2.5 text-xs border" style={{background:"var(--brand-light)",borderColor:"var(--brand-mid)",color:"var(--brand-dark)"}}>
-                        <p className="font-semibold">1학기(6개월) 부족 특례 해당</p>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-2.5 text-xs text-blue-800">
+                        <p className="font-semibold">📌 1학기(6개월) 부족 특례 해당</p>
                         <p className="mt-0.5">학제 차이로 한 학기가 부족하지만, 외국학교에서 국내 학교로 <strong>공백 없이 연속 취학</strong>하는 경우 학교장 판단에 따라 상위 학년 배정이 가능합니다.</p>
                       </div>
                     )}
 
                     {/* 졸업학력 인정 조건 */}
                     {result.info.school === "고등학교 졸업 이상" && (
-                      <div className="rounded-lg p-2.5 text-xs border" style={{background:"var(--success-light)",borderColor:"var(--success-mid)",color:"var(--success)"}}>
-                        <p className="font-semibold">졸업학력 인정 가능</p>
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-2.5 text-xs text-green-800">
+                        <p className="font-semibold">🎓 졸업학력 인정 가능</p>
                         <p className="mt-0.5">외국 정규교육기관에서 총 재학기간을 만족하며 수료·졸업한 경우 졸업학력으로 인정합니다.</p>
                       </div>
                     )}
@@ -744,21 +899,21 @@ function CalculatorTab() {
           </div>
 
           {/* 인정 기준 요약 */}
-          <div className="ds-card p-5">
-            <h4 className="ds-h text-sm font-bold mb-3" style={{color:"var(--text-main)"}}>외국 학교교육과정 인정 기준</h4>
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+            <h4 className="text-sm font-bold text-gray-700 mb-3">📌 외국 학교교육과정 인정 기준</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
               {[
-                { school: "초등학교 과정", range: "외국학교 1~6학년 과정", col: "var(--brand)" },
-                { school: "중학교 과정",   range: "외국학교 7~9학년 과정",  col: "#059669" },
-                { school: "고등학교 과정", range: "외국학교 10~12학년 과정",col: "#7c3aed" },
-              ].map(({ school, range, col }) => (
-                <div key={school} className="rounded-lg p-3 border" style={{borderColor:"var(--border)",background:"var(--bg)"}}>
-                  <p className="font-bold" style={{color:col}}>{school}</p>
-                  <p className="mt-0.5" style={{color:"var(--text-sub)"}}>{range}</p>
+                { school: "초등학교 과정", range: "외국학교 1~6학년 과정", box: "bg-indigo-50 border-indigo-200", title: "text-indigo-800", text: "text-indigo-600" },
+                { school: "중학교 과정",   range: "외국학교 7~9학년 과정",  box: "bg-green-50 border-green-200", title: "text-green-800", text: "text-green-600" },
+                { school: "고등학교 과정", range: "외국학교 10~12학년 과정",box: "bg-purple-50 border-purple-200", title: "text-purple-800", text: "text-purple-600" },
+              ].map(({ school, range, box, title, text }) => (
+                <div key={school} className={`${box} border rounded-lg p-3`}>
+                  <p className={`font-bold ${title}`}>{school}</p>
+                  <p className={`${text} mt-0.5`}>{range}</p>
                 </div>
               ))}
             </div>
-            <div className="space-y-1.5 text-xs" style={{color:"var(--text-sub)"}}>
+            <div className="space-y-1.5 text-xs text-gray-600">
               <p>• <strong>인정 대상:</strong> 국내가 아닌 <strong>외국에 소재하는 학교</strong> (국내 소재 외국인 학교 제외)</p>
               <p>• <strong>인정 기준:</strong> 우리나라 학제(학기 단위)에 따른 교급별 교육과정상 교육 연한</p>
               <p>• <strong>최소 이수:</strong> 외국 정규학교 이수기간은 최소 6개월(한 학기) 이상인 경우에 인정</p>
@@ -1108,40 +1263,40 @@ function ApostilleTab() {
   return (
     <>
       {/* 개요 배너 */}
-      <div className="ds-banner">
+      <div className="bg-gradient-to-r from-rose-600 to-orange-500 rounded-2xl p-4 sm:p-5 text-white shadow-md">
         <h3 className="text-base sm:text-lg font-bold mb-1 flex items-center gap-2"><Stamp size={17} />아포스티유 협약국 확인</h3>
-        <p className="text-xs sm:text-sm leading-relaxed" style={{color:"rgba(255,255,255,0.82)"}}>
+        <p className="text-rose-100 text-xs sm:text-sm leading-relaxed">
           국가명(한국어·영어)을 입력하면 HCCH 협약 가입 여부를 즉시 확인합니다.
           <strong> 방법 2(아포스티유)</strong> 또는 <strong>방법 3(영사확인)</strong> 중 어느 서류 처리가 필요한지 안내합니다.
         </p>
       </div>
 
       {/* 흐름도 */}
-      <div className="ds-card p-4 sm:p-5">
-        <h4 className="ds-h text-xs sm:text-sm font-bold mb-3" style={{color:"var(--text-main)"}}>외국 학력서류 인증 흐름</h4>
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-5">
+        <h4 className="font-bold text-gray-700 mb-3 text-xs sm:text-sm">📋 외국 학력서류 인증 흐름</h4>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
           {[
             { box: "bg-blue-50 border-blue-200", badgeClass: "bg-blue-600", titleClass: "text-blue-800", subClass: "text-blue-500", badge: "방법 1", title: "교육부 홈페이지", sub: "학력인정학교 목록" },
             { box: "bg-rose-50 border-rose-200", badgeClass: "bg-rose-600", titleClass: "text-rose-800", subClass: "text-rose-500", badge: "방법 2", title: "아포스티유 (협약국)", sub: "권한기관 아포스티유" },
-            { badgeType: "warn",    badge: "방법 3", title: "영사확인 (미가입국)", sub: "재외공관 영사 인증" },
+            { box: "bg-amber-50 border-amber-200", badgeClass: "bg-amber-600", titleClass: "text-amber-800", subClass: "text-amber-500", badge: "방법 3", title: "영사확인 (미가입국)", sub: "재외공관 영사 인증" },
             { box: "bg-gray-50 border-gray-200", badgeClass: "bg-gray-600", titleClass: "text-gray-800", subClass: "text-gray-500", badge: "방법 4", title: "직접 소명", sub: "정규교육기관 소명" },
-          ].map(({ badgeType, badge, title, sub }) => (
-            <div key={badge} className="rounded-lg p-2.5 text-center border" style={{background:"var(--bg)",borderColor:"var(--border)"}}>
-              <span className={`ds-badge ds-badge-${badgeType} mb-2`}>{badge}</span>
-              <p className="font-semibold text-xs leading-snug mt-1" style={{color:"var(--text-main)"}}>{title}</p>
-              <p className="text-[10px] mt-0.5 hidden sm:block" style={{color:"var(--text-muted)"}}>{sub}</p>
+          ].map(({ box, badgeClass, titleClass, subClass, badge, title, sub }) => (
+            <div key={badge} className={`${box} border rounded-lg p-2.5 text-center`}>
+              <span className={`inline-block ${badgeClass} text-white text-[10px] font-bold px-1.5 py-0.5 rounded mb-1`}>{badge}</span>
+              <p className={`font-semibold ${titleClass} text-[11px] sm:text-xs leading-snug`}>{title}</p>
+              <p className={`${subClass} text-[10px] mt-0.5 hidden sm:block`}>{sub}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* 검색 카드 */}
-      <div className="ds-card p-4 sm:p-6">
-        <h3 className="text-sm sm:text-base font-bold mb-0.5 flex items-center gap-2" style={{color:"var(--text-main)"}}><Search size={15} />국가별 협약 가입 여부 조회</h3>
-        <p className="text-xs mb-2" style={{color:"var(--text-muted)"}}>한국어 또는 영어 국가명을 입력하세요. 내장 데이터로 즉시 조회됩니다.</p>
-        <div className="ds-alert-warn flex items-start gap-1.5 mb-4">
-          <AlertCircle size={13} className="flex-shrink-0 mt-0.5" style={{color:"var(--warn)"}} />
-          <p className="text-xs" style={{color:"#92400e"}}>내장 데이터는 <strong>2026년 5월 기준</strong>으로 작성되었습니다. 이후 신규 가입국이 생길 수 있으므로, 최신 현황은 <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="underline font-semibold">외교부 아포스티유 홈페이지</a>에서 추가 확인하시기 바랍니다.</p>
+      <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200 shadow-sm">
+        <h3 className="text-sm sm:text-base font-bold mb-0.5 text-gray-800 flex items-center gap-2"><Search size={15} />국가별 협약 가입 여부 조회</h3>
+        <p className="text-xs text-gray-400 mb-2">한국어 또는 영어 국가명을 입력하세요. 내장 데이터로 즉시 조회됩니다.</p>
+        <div className="flex items-start gap-1.5 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4">
+          <AlertCircle size={13} className="text-amber-500 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-700">내장 데이터는 <strong>2026년 5월 기준</strong>으로 작성되었습니다. 이후 신규 가입국이 생길 수 있으므로, 최신 현황은 <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="underline font-semibold">외교부 아포스티유 홈페이지</a>에서 추가 확인하시기 바랍니다.</p>
         </div>
 
         <div className="flex gap-2 mb-3">
@@ -1151,12 +1306,12 @@ function ApostilleTab() {
             onChange={e => setCountry(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSubmit()}
             placeholder="예: 베트남, 중국, 몽골, Bangladesh, Philippines..."
-            className="flex-1 border rounded-lg px-3 sm:px-4 py-2.5 text-sm outline-none min-w-0" style={{borderColor:"var(--border)",background:"var(--bg)"}}
+            className="flex-1 border border-gray-300 rounded-lg px-3 sm:px-4 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-rose-400 outline-none min-w-0"
           />
           <button
             onClick={handleSubmit}
             disabled={status === "loading"}
-            className="text-white px-4 sm:px-5 py-2.5 rounded-lg font-semibold text-sm shadow-sm flex items-center gap-1.5 disabled:opacity-60 whitespace-nowrap flex-shrink-0" style={{background:"var(--brand)"}}
+            className="bg-rose-600 text-white px-4 sm:px-5 py-2.5 rounded-lg font-semibold hover:bg-rose-700 active:scale-95 transition-all text-sm shadow-sm flex items-center gap-1.5 disabled:opacity-60 whitespace-nowrap flex-shrink-0"
           >
             {status === "loading"
               ? <><Loader2 size={14} className="animate-spin" /><span className="hidden sm:inline">조회 중</span></>
@@ -1168,7 +1323,10 @@ function ApostilleTab() {
         <div className="flex flex-wrap gap-1.5 mb-4">
           {["베트남","중국","필리핀","인도네시아","몽골","미국","방글라데시","캄보디아","태국","일본","러시아","카자흐스탄","우즈베키스탄"].map(c => (
             <button key={c} onClick={() => { setCountry(c); doSearch(c); }}
-              className="text-xs px-2.5 py-1 rounded-full border transition-colors" style={history.includes(c)?{background:"var(--brand-light)",color:"var(--brand)",borderColor:"var(--brand-mid)"}:{background:"var(--bg)",color:"var(--text-sub)",borderColor:"var(--border)"}}>
+              className={`text-xs px-2.5 py-1 rounded-full border transition-colors
+                ${history.includes(c)
+                  ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
+                  : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100"}`}>
               {c}
             </button>
           ))}
@@ -1181,8 +1339,8 @@ function ApostilleTab() {
             <div className="flex flex-wrap gap-1.5">
               {history.map(h => (
                 <button key={h} onClick={() => { setCountry(h); doSearch(h); }}
-                  className="text-xs px-3 py-1 rounded-full border transition-colors flex items-center gap-1" style={{background:"var(--brand-light)",color:"var(--brand)",borderColor:"var(--brand-mid)"}}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>{h}
+                  className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1 rounded-full border border-rose-200 transition-colors flex items-center gap-1">
+                  <span>🕐</span>{h}
                 </button>
               ))}
             </div>
@@ -1191,16 +1349,16 @@ function ApostilleTab() {
 
         {/* 로딩 */}
         {status === "loading" && (
-          <div className="text-center py-8" style={{color:"var(--text-muted)"}}>
-            <Loader2 size={32} className="mx-auto mb-2 animate-spin" style={{color:"var(--brand)"}} />
+          <div className="text-center py-8 text-gray-400">
+            <Loader2 size={32} className="mx-auto mb-2 animate-spin text-rose-400" />
             <p className="text-sm">국가 정보를 조회 중입니다...</p>
           </div>
         )}
 
         {/* 에러 */}
         {status === "error" && (
-          <div className="p-4 rounded-lg border text-sm flex items-start gap-2" style={{background:"var(--danger-light)",borderColor:"var(--danger-mid)",color:"var(--danger)"}}>
-            <AlertCircle size={16} className="flex-shrink-0 mt-0.5" style={{color:"var(--danger)"}} />
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex items-start gap-2">
+            <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold">조회 실패</p>
               <p className="text-xs mt-0.5">{errorMsg}</p>
@@ -1214,24 +1372,24 @@ function ApostilleTab() {
       </div>
 
       {/* 확인서 양식 안내 */}
-      <div className="ds-card p-4 sm:p-5">
-        <h4 className="ds-h font-bold mb-3 text-xs sm:text-sm flex items-center gap-2" style={{color:"var(--text-main)"}}>
-          <FileText size={13} style={{color:"var(--brand)"}} />아포스티유 확인서 주요 기재사항
+      <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm">
+        <h4 className="font-bold text-gray-800 mb-3 text-xs sm:text-sm flex items-center gap-2">
+          <FileText size={13} className="text-rose-500" />아포스티유 확인서 주요 기재사항
         </h4>
         <div className="grid grid-cols-3 gap-1.5 sm:gap-2 text-xs">
           {APOSTILLE_ITEMS.map(({ num, label }) => (
-            <div key={num} className="rounded-lg p-2.5 border flex items-center gap-2" style={{background:"var(--bg)",borderColor:"var(--border)"}}>
-              <span className="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] flex-shrink-0" style={{background:"var(--brand-light)",color:"var(--brand)"}}>{num}</span>
-              <span className="font-medium" style={{color:"var(--text-sub)"}}>{label}</span>
+            <div key={num} className="bg-gray-50 rounded-lg p-2.5 border flex items-center gap-2">
+              <span className="w-5 h-5 bg-rose-100 text-rose-700 rounded-full flex items-center justify-center font-bold text-[10px] flex-shrink-0">{num}</span>
+              <span className="text-gray-700 font-medium">{label}</span>
             </div>
           ))}
         </div>
-        <p className="text-xs mt-2" style={{color:"var(--text-muted)"}}>※ 아포스티유는 원칙적으로 문서 '원문' 대상. 번역문은 공증사무소 '공증' 후 권한기관에 별도 아포스티유 신청 필요.</p>
+        <p className="text-xs text-gray-400 mt-3">※ 아포스티유는 원칙적으로 문서 '원문' 대상. 번역문은 공증사무소 '공증' 후 권한기관에 별도 아포스티유 신청 필요.</p>
         <div className="mt-2 flex gap-4">
-          <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="text-xs hover:underline flex items-center gap-1" style={{color:"var(--brand)"}}>
+          <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="text-xs text-rose-600 hover:underline flex items-center gap-1">
             <ExternalLink size={11} />외교부 아포스티유 홈페이지
           </a>
-          <a href="https://www.oka.go.kr" target="_blank" rel="noreferrer" className="text-xs hover:underline flex items-center gap-1" style={{color:"var(--brand)"}}>
+          <a href="https://www.oka.go.kr" target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
             <ExternalLink size={11} />재외동포청 홈페이지
           </a>
         </div>
@@ -1242,18 +1400,18 @@ function ApostilleTab() {
         href="https://www.apostille.go.kr/index.do"
         target="_blank"
         rel="noreferrer"
-        className="flex items-center justify-between ds-card hover:shadow-md active:scale-[0.99] transition-all p-4 sm:p-5 group"
+        className="flex items-center justify-between bg-white hover:bg-rose-50 active:scale-[0.99] transition-all border border-rose-200 rounded-xl p-4 sm:p-5 shadow-sm group"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors" style={{background:"var(--brand-light)"}}>
-            <CheckCircle2 size={20} style={{color:"var(--brand)"}} />
+          <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-rose-200 transition-colors">
+            <CheckCircle2 size={20} className="text-rose-600" />
           </div>
           <div>
-            <p className="font-bold text-sm transition-colors" style={{color:"var(--text-main)"}}>아포스티유 증명서 검증</p>
-            <p className="text-xs mt-0.5" style={{color:"var(--text-muted)"}}>외교부 공식 사이트에서 발급된 아포스티유의 진위를 확인합니다</p>
+            <p className="font-bold text-sm text-gray-800 group-hover:text-rose-700 transition-colors">아포스티유 증명서 검증</p>
+            <p className="text-xs text-gray-500 mt-0.5">외교부 공식 사이트에서 발급된 아포스티유의 진위를 확인합니다</p>
           </div>
         </div>
-        <ExternalLink size={16} className="flex-shrink-0 ml-3" style={{color:"var(--brand)"}} />
+        <ExternalLink size={16} className="text-rose-400 flex-shrink-0 ml-3 group-hover:text-rose-600 transition-colors" />
       </a>
     </>
   );
@@ -1262,16 +1420,16 @@ function ApostilleTab() {
 function ApostilleResult({ info }) {
   const ok = info.is_member;
   return (
-    <div className="rounded-xl border p-4 sm:p-5 mt-3" style={ok?{background:"var(--success-light)",borderColor:"var(--success-mid)"}:{background:"var(--warn-light)",borderColor:"var(--warn-mid)"}}>
+    <div className={`rounded-xl border p-4 sm:p-5 mt-3 ${ok ? "bg-emerald-50 border-emerald-300" : "bg-amber-50 border-amber-300"}`}>
       {/* 헤더 */}
       <div className="flex items-center gap-3 mb-3">
         {ok
-          ? <CheckCircle2 size={28} className="flex-shrink-0" style={{color:"var(--success)"}} />
-          : <XCircle     size={28} className="flex-shrink-0" style={{color:"var(--warn)"}} />}
+          ? <CheckCircle2 size={28} className="text-emerald-500 flex-shrink-0" />
+          : <XCircle     size={28} className="text-amber-500 flex-shrink-0" />}
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             {info.flag && <span className="text-2xl leading-none">{info.flag}</span>}
-            <h4 className="text-lg sm:text-xl font-black" style={{color:ok?"var(--success)":"var(--warn)"}}>
+            <h4 className={`text-lg sm:text-xl font-black ${ok ? "text-emerald-800" : "text-amber-800"}`}>
               {info.country_ko || "—"}
             </h4>
             {info.country_en && (
@@ -1281,8 +1439,8 @@ function ApostilleResult({ info }) {
               <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-mono">{info.cca2}</span>
             )}
           </div>
-          <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold" style={ok?{background:"#dcfce7",color:"var(--success)"}:{background:"#fef9c3",color:"var(--warn)"}}>
-            {ok ? "아포스티유 협약 가입국" : "아포스티유 협약 미가입국"}
+          <span className={`inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-bold ${ok ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
+            {ok ? "✅ 아포스티유 협약 가입국" : "❌ 아포스티유 협약 미가입국"}
           </span>
         </div>
       </div>
@@ -1295,26 +1453,26 @@ function ApostilleResult({ info }) {
         </div>
       )}
       {info.note && (
-        <div className="rounded-lg p-2.5 text-xs mb-3 flex items-start gap-1.5 border" style={{background:"rgba(255,255,255,0.7)",borderColor:"var(--border)",color:"var(--text-sub)"}}>
-          <AlertCircle size={12} className="flex-shrink-0 mt-0.5" style={{color:"var(--warn)"}} />
+        <div className="bg-white/70 border rounded-lg p-2.5 text-xs text-gray-700 mb-3 flex items-start gap-1.5">
+          <span className="flex-shrink-0">⚠️</span>
           <span>{info.note}</span>
         </div>
       )}
 
       {/* 처리 방법 */}
       {ok ? (
-        <div className="rounded-lg p-4 border" style={{background:"#dcfce7",borderColor:"var(--success-mid)"}}>
-          <span className="ds-badge ds-badge-success mb-2">[방법 2] 아포스티유 인증</span>
-          <ul className="text-xs space-y-1 list-disc list-inside mt-1" style={{color:"#166534"}}>
+        <div className="bg-emerald-100 border border-emerald-200 rounded-lg p-4">
+          <span className="bg-emerald-700 text-white text-xs font-bold px-2 py-0.5 rounded inline-block mb-2">[방법 2] 아포스티유 인증</span>
+          <ul className="text-xs text-emerald-800 space-y-1 list-disc list-inside">
             <li>해당 국가의 권한기관에서 <strong>아포스티유가 부착된 서류</strong>를 발급받아 제출</li>
             <li>번역문이 필요한 경우 공증사무소 '공증' 후 별도로 아포스티유 신청</li>
             <li>협약국 권한기관 확인: apostille.go.kr → [서비스 안내] → [아포스티유 제도 소개] → '가입국 현황'</li>
           </ul>
         </div>
       ) : (
-        <div className="rounded-lg p-4 border" style={{background:"#fef9c3",borderColor:"var(--warn-mid)"}}>
-          <span className="ds-badge ds-badge-warn mb-2">[방법 3] 영사확인 (Legalization)</span>
-          <ul className="text-xs space-y-1 list-disc list-inside mt-1" style={{color:"#92400e"}}>
+        <div className="bg-amber-100 border border-amber-200 rounded-lg p-4">
+          <span className="bg-amber-700 text-white text-xs font-bold px-2 py-0.5 rounded inline-block mb-2">[방법 3] 영사확인 (Legalization)</span>
+          <ul className="text-xs text-amber-800 space-y-1 list-disc list-inside">
             <li>아포스티유 협약 미가입국이므로 <strong>대한민국 재외공관 영사의 인증</strong>이 필요</li>
             <li>해당 국가 내 대한민국 대사관·영사관에서 문서 영사확인 신청</li>
             <li>문의: 외교부(mofa.go.kr) 또는 해당국 주재 한국 대사관</li>
@@ -1322,8 +1480,8 @@ function ApostilleResult({ info }) {
         </div>
       )}
 
-      <p className="text-xs mt-3 flex items-center gap-1 flex-wrap" style={{color:"var(--text-muted)"}}>
-        <span>
+      <p className="text-[10px] text-gray-400 mt-3 flex items-center gap-1">
+        <span>📊</span>
         <span>HCCH 자체 내장 데이터 · REST Countries API 국가명 조회 · 최종 확인은 <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="underline">apostille.go.kr</a>에서 하세요.</span>
       </p>
     </div>
@@ -1338,7 +1496,7 @@ function ApostilleResult({ info }) {
 const NEIS_SECTIONS = [
   {
     id: "identity",
-    badge: "인적사항", badgeType: "brand",
+    badge: "인적사항", badgeColor: "bg-blue-200 text-blue-900",
     title: "학교생활기록부 인적사항 입력 핵심",
     content: [
       {
@@ -1372,7 +1530,7 @@ const NEIS_SECTIONS = [
   },
   {
     id: "enter",
-    badge: "입학·취학", badgeType: "success",
+    badge: "입학·취학", badgeColor: "bg-indigo-200 text-indigo-900",
     title: "입학 / 취학 나이스 처리",
     content: [
       {
@@ -1400,7 +1558,7 @@ const NEIS_SECTIONS = [
   },
   {
     id: "discharge",
-    badge: "면제", badgeType: "danger",
+    badge: "면제", badgeColor: "bg-red-200 text-red-900",
     title: "학업 중단 (면제) 처리",
     content: [
       {
@@ -1444,7 +1602,7 @@ const NEIS_SECTIONS = [
   },
   {
     id: "transfer",
-    badge: "편입학", badgeType: "brand",
+    badge: "편입학", badgeColor: "bg-emerald-200 text-emerald-900",
     title: "편입학 (재입교) 처리",
     content: [
       {
@@ -1477,7 +1635,7 @@ const NEIS_SECTIONS = [
   },
   {
     id: "correction",
-    badge: "수정·정정", badgeType: "warn",
+    badge: "수정·정정", badgeColor: "bg-amber-200 text-amber-900",
     title: "학생정보 변경 경로 (대상별)",
     content: [
       {
@@ -1505,7 +1663,7 @@ const NEIS_SECTIONS = [
   },
   {
     id: "nrecord",
-    badge: "학생부", badgeType: "gray",
+    badge: "학생부", badgeColor: "bg-violet-200 text-violet-900",
     title: "학교생활기록부 특기사항 기재 예시",
     content: [
       {
@@ -1539,23 +1697,23 @@ function NeisTab() {
   return (
     <div className="space-y-3">
       {/* 헤더 */}
-      <div className="ds-banner">
+      <div className="bg-gradient-to-r from-blue-700 to-indigo-700 rounded-2xl p-4 sm:p-5 text-white shadow-md">
         <h3 className="text-base sm:text-lg font-bold mb-1 flex items-center gap-2">
           <Monitor size={17} />나이스(NEIS) 학적처리 핵심 가이드
         </h3>
-        <p className="text-xs sm:text-sm" style={{color:"rgba(255,255,255,0.82)"}}>외국 국적 학생 입·퇴교 유형별 나이스 메뉴 경로와 입력 요령을 정리했습니다. 항목을 클릭해 펼쳐보세요.</p>
+        <p className="text-blue-100 text-xs sm:text-sm">외국 국적 학생 입·퇴교 유형별 나이스 메뉴 경로와 입력 요령을 정리했습니다. 항목을 클릭해 펼쳐보세요.</p>
       </div>
 
       {/* 빠른 참조 카드 */}
-      <div className="ds-card p-4">
-        <h4 className="ds-h text-xs font-bold mb-3" style={{color:"var(--text-main)"}}>학적 변동 유형별 핵심 메뉴 빠른 참조</h4>
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+        <h4 className="text-xs font-bold text-gray-700 mb-3">⚡ 학적 변동 유형별 핵심 메뉴 빠른 참조</h4>
         <div className="overflow-x-auto">
           <table className="w-full text-xs border-collapse min-w-[420px]">
             <thead>
-              <tr>
-                <th className="ds-th border border-gray-200 px-3 py-2 text-left">상황</th>
-                <th className="ds-th border border-gray-200 px-3 py-2 text-left">변동구분</th>
-                <th className="ds-th border border-gray-200 px-3 py-2 text-left">나이스 메뉴</th>
+              <tr className="bg-indigo-50">
+                <th className="border border-gray-200 px-3 py-2 text-left text-indigo-700 font-semibold">상황</th>
+                <th className="border border-gray-200 px-3 py-2 text-left text-indigo-700 font-semibold">변동구분</th>
+                <th className="border border-gray-200 px-3 py-2 text-left text-gray-600 font-semibold">나이스 메뉴</th>
               </tr>
             </thead>
             <tbody>
@@ -1569,7 +1727,7 @@ function NeisTab() {
               ].map(({ sit, type, menu }) => (
                 <tr key={sit} className="hover:bg-gray-50">
                   <td className="border border-gray-200 px-3 py-1.5 text-gray-700 font-medium">{sit}</td>
-                  <td className="border border-gray-200 px-3 py-1.5 font-bold" style={{color:type.includes("면제")?"var(--danger)":"var(--brand)"}}>{type}</td>
+                  <td className={`border border-gray-200 px-3 py-1.5 font-bold ${type.includes("면제") ? "text-red-600" : "text-indigo-600"}`}>{type}</td>
                   <td className="border border-gray-200 px-3 py-1.5 text-gray-500 font-mono text-[10px]">{menu}</td>
                 </tr>
               ))}
@@ -1580,15 +1738,15 @@ function NeisTab() {
 
       {/* 아코디언 섹션 */}
       <div className="space-y-2">
-        {NEIS_SECTIONS.map(({ id, badge, badgeType, title, content }) => {
+        {NEIS_SECTIONS.map(({ id, badge, badgeColor, title, content }) => {
           const isOpen = openId === id;
           return (
-            <div key={id} className={`ds-card overflow-hidden ${isOpen?"ds-open":""}`}>
+            <div key={id} className={`bg-white rounded-xl border ${isOpen ? "border-indigo-300" : "border-gray-200"} shadow-sm overflow-hidden`}>
               <button
                 onClick={() => toggle(id)}
                 className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-gray-50 active:bg-gray-100 transition-colors"
               >
-                <span className={`ds-badge ds-badge-${badgeType} flex-shrink-0`}>{badge}</span>
+                <span className={`flex-shrink-0 px-2 py-0.5 rounded text-xs font-bold ${badgeColor}`}>{badge}</span>
                 <span className="flex-1 text-sm font-semibold text-gray-800">{title}</span>
                 <span className="text-gray-400 flex-shrink-0">
                   {isOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -1596,19 +1754,19 @@ function NeisTab() {
               </button>
 
               {isOpen && (
-                <div className="px-4 pb-4 border-t space-y-4 pt-3" style={{borderColor:"var(--border)"}}>
+                <div className="px-4 pb-4 border-t border-indigo-100 space-y-4 pt-3">
                   {content.map(({ subtitle, path, items }) => (
                     <div key={subtitle}>
-                      <p className="text-xs font-bold mb-1.5" style={{color:"var(--brand-dark)"}}>{subtitle}</p>
+                      <p className="text-xs font-bold text-indigo-800 mb-1.5">{subtitle}</p>
                       {path && (
-                        <p className="ds-path mb-2">
-                          {path}
+                        <p className="text-[11px] text-gray-600 font-mono bg-blue-50 border border-blue-100 px-3 py-1.5 rounded mb-2">
+                          📂 {path}
                         </p>
                       )}
                       <ul className="space-y-1">
                         {items.map((item, i) => (
                           <li key={i} className="flex items-start gap-1.5 text-xs text-gray-600">
-                            <span className="mt-0.5 flex-shrink-0" style={{color:"var(--brand)"}}>•</span>
+                            <span className="text-indigo-400 mt-0.5 flex-shrink-0">•</span>
                             <span className="leading-relaxed">{item}</span>
                           </li>
                         ))}
@@ -1623,8 +1781,8 @@ function NeisTab() {
       </div>
 
       {/* 주의사항 공통 */}
-      <div className="ds-alert-warn rounded-xl text-xs space-y-1">
-        <p className="font-bold mb-1.5" style={{color:"var(--warn)"}}>나이스 처리 공통 유의사항</p>
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800 space-y-1">
+        <p className="font-bold mb-1.5">⚠️ 나이스 처리 공통 유의사항</p>
         <li className="list-none flex gap-1.5"><span className="flex-shrink-0">•</span><span>나이스 메뉴는 학교별·업무담당자 권한에 따라 다르게 나타날 수 있습니다.</span></li>
         <li className="list-none flex gap-1.5"><span className="flex-shrink-0">•</span><span>외국 국적 학생 면제 시 의무교육관리위원회 개최 불필요 (대한민국 국적 학생에만 해당).</span></li>
         <li className="list-none flex gap-1.5"><span className="flex-shrink-0">•</span><span>예시 화면의 외국인등록번호 뒷자리 '7999999'·'8999999'는 개인정보 보호를 위한 임시 숫자로, 실제 입력 시 해당 학생의 번호를 입력합니다.</span></li>
@@ -1878,11 +2036,11 @@ const QNA_DATA = [
 ];
 
 const CAT_COLORS = {
-  violet:  { bg:"#f5f3ff", text:"#5b21b6", border:"#ddd6fe", badge:"#7c3aed" },
-  sky:     { bg:"var(--brand-light)", text:"var(--brand-dark)", border:"var(--brand-mid)", badge:"var(--brand)" },
-  emerald: { bg:"var(--success-light)", text:"#166534", border:"var(--success-mid)", badge:"var(--success)" },
-  amber:   { bg:"var(--warn-light)", text:"#92400e", border:"var(--warn-mid)", badge:"var(--warn)" },
-  rose:    { bg:"var(--danger-light)", text:"#991b1b", border:"var(--danger-mid)", badge:"var(--danger)" },
+  violet:  { bg: "bg-violet-100",  text: "text-violet-700",  border: "border-violet-200",  badge: "bg-violet-600"  },
+  sky:     { bg: "bg-sky-100",     text: "text-sky-700",     border: "border-sky-200",     badge: "bg-sky-600"     },
+  emerald: { bg: "bg-emerald-100", text: "text-emerald-700", border: "border-emerald-200", badge: "bg-emerald-600" },
+  amber:   { bg: "bg-amber-100",   text: "text-amber-700",   border: "border-amber-200",   badge: "bg-amber-600"   },
+  rose:    { bg: "bg-rose-100",    text: "text-rose-700",    border: "border-rose-200",    badge: "bg-rose-600"    },
 };
 
 // allItems — QnaTab 외부 상수 (QNA_DATA가 불변이므로 한 번만 계산)
@@ -1913,26 +2071,26 @@ function QnaTab() {
   return (
     <div className="space-y-4">
       {/* 헤더 */}
-      <div className="ds-banner">
+      <div className="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-2xl p-4 sm:p-5 text-white shadow-md">
         <h3 className="text-base sm:text-lg font-bold mb-1 flex items-center gap-2">
           <HelpCircle size={17} />자주 묻는 질문 (Q&A)
         </h3>
-        <p className="text-xs sm:text-sm" style={{color:"rgba(255,255,255,0.82)"}}>외국 국적 학생 학적 관리 현장에서 자주 발생하는 질문 35개를 5개 카테고리로 정리했습니다.</p>
+        <p className="text-teal-100 text-xs sm:text-sm">외국 국적 학생 학적 관리 현장에서 자주 발생하는 질문 35개를 5개 카테고리로 정리했습니다.</p>
       </div>
 
       {/* 검색 + 필터 */}
-      <div className="ds-card p-3 sm:p-4 space-y-3">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-3 sm:p-4 space-y-3">
         <div className="relative">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{color:"var(--text-muted)"}} />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             value={search}
             onChange={e => { setSearch(e.target.value); setOpenKey(null); }}
             placeholder="질문 또는 키워드 검색... (예: 취학, 편입학, 나이스, 예방접종)"
-            className="w-full pl-9 pr-4 py-2.5 border rounded-lg text-sm outline-none" style={{borderColor:"var(--border)",background:"var(--bg)"}}
+            className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm bg-gray-50 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none"
           />
           {search && (
-            <button onClick={() => { setSearch(""); setOpenKey(null); }} className="absolute right-3 top-1/2 -translate-y-1/2" style={{color:"var(--text-muted)"}}>
+            <button onClick={() => { setSearch(""); setOpenKey(null); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
               <XCircle size={15} />
             </button>
           )}
@@ -1946,8 +2104,8 @@ function QnaTab() {
               <button key={cat} onClick={() => { setActiveCat(cat); setOpenKey(null); }}
                 className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all
                   ${isActive
-                    ? "text-white border-transparent"
-                    "" style={isActive ? (color ? {background:color.badge,color:"#fff"} : {background:"var(--brand)",color:"#fff"}) : {background:"var(--surface)",color:"var(--text-sub)",borderColor:"var(--border)"}}>
+                    ? color ? `${color.badge} text-white border-transparent` : "bg-gray-700 text-white border-transparent"
+                    : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>
                 {cat}
                 {cat !== "전체" && (
                   <span className="ml-1 opacity-70">
@@ -1961,13 +2119,13 @@ function QnaTab() {
       </div>
 
       {/* 결과 수 */}
-      <p className="text-xs px-1" style={{color:"var(--text-muted)"}}>
+      <p className="text-xs text-gray-400 px-1">
         {filtered.length}개 항목 표시 중 (전체 {ALL_QNA_ITEMS.length}개)
       </p>
 
       {/* Q&A 목록 */}
       {filtered.length === 0 ? (
-        <div className="ds-card p-10 text-center" style={{color:"var(--text-muted)"}}>
+        <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
           <HelpCircle size={36} className="mx-auto mb-2 opacity-30" />
           <p className="text-sm">검색 결과가 없습니다. 다른 키워드로 검색해 보세요.</p>
         </div>
@@ -1978,7 +2136,7 @@ function QnaTab() {
             const key = getKey(item);
             const isOpen = openKey === key;
             return (
-              <div key={key} className={`ds-card overflow-hidden transition-all ${isOpen?"ds-open":""}`}>
+              <div key={key} className={`bg-white rounded-xl border ${isOpen ? color.border : "border-gray-200"} shadow-sm overflow-hidden transition-all`}>
                 <button
                   onClick={() => toggle(item)}
                   className="w-full flex items-start gap-2.5 p-3.5 sm:p-4 text-left hover:bg-gray-50 active:bg-gray-100 transition-colors"
@@ -1986,24 +2144,24 @@ function QnaTab() {
                   <span className={`flex-shrink-0 mt-0.5 px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-bold text-white ${color.badge}`}>
                     {item.cat}
                   </span>
-                  <span className="flex-1 text-xs sm:text-sm font-semibold leading-snug" style={{color:"var(--text-main)"}}>{item.q}</span>
-                  <span className="flex-shrink-0 mt-0.5" style={{color:color.badge}}>
+                  <span className="flex-1 text-xs sm:text-sm font-semibold text-gray-800 leading-snug">{item.q}</span>
+                  <span className={`flex-shrink-0 mt-0.5 ${color.text}`}>
                     {isOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                   </span>
                 </button>
 
                 {isOpen && (
-                  <div className="px-3.5 sm:px-4 pb-3.5 sm:pb-4 border-t" style={{borderColor:color.border}}>
-                    <div className="mt-3 rounded-lg p-3 sm:p-4 space-y-2" style={{background:color.bg}}>
+                  <div className={`px-3.5 sm:px-4 pb-3.5 sm:pb-4 border-t ${color.border}`}>
+                    <div className={`mt-3 rounded-lg p-3 sm:p-4 ${color.bg} space-y-2`}>
                       {item.a.map((line, i) => (
-                        <p key={i} className="text-xs leading-relaxed" style={{color:color.text,fontStyle:(line.startsWith("※")||line.startsWith("*"))?"italic":"normal",opacity:(line.startsWith("※")||line.startsWith("*"))?0.75:1}}>
+                        <p key={i} className={`text-xs ${color.text} leading-relaxed ${line.startsWith("※") || line.startsWith("*") ? "opacity-75 italic" : ""}`}>
                           {line}
                         </p>
                       ))}
                     </div>
                     <div className="flex items-center gap-1 mt-2">
-                      <Tag size={10} style={{color:"var(--text-muted)"}} />
-                      <span className="text-xs" style={{color:"var(--text-muted)"}}>{item.tag}</span>
+                      <Tag size={10} className="text-gray-300" />
+                      <span className="text-[10px] text-gray-400">{item.tag}</span>
                     </div>
                   </div>
                 )}
