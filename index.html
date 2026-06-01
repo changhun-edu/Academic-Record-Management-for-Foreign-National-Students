@@ -314,8 +314,7 @@ function RadioGroup({ name, value, onChange, options }) {
   return (
     <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
       {options.map(o => (
-        <label key={o.value} className={`flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-lg border text-sm transition-all
-          `} style={value===o.value?{background:"var(--brand-light)",borderColor:"var(--brand)",color:"var(--brand-dark)",fontWeight:600}:{background:"var(--bg)",borderColor:"var(--border)",color:"var(--text-sub)"}}>
+        <label key={o.value} className="flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-lg border text-sm transition-all" style={value===o.value?{background:"var(--brand-light)",borderColor:"var(--brand)",color:"var(--brand-dark)",fontWeight:600}:{background:"var(--bg)",borderColor:"var(--border)",color:"var(--text-sub)"}}>
           <input type="radio" name={name} value={o.value} checked={value === o.value} onChange={() => onChange(o.value)} className="flex-shrink-0" style={{accentColor:"var(--brand)"}} />
           {o.label}
         </label>
@@ -398,10 +397,8 @@ function ChecklistTab() {
       <div className="space-y-2">
         {items.map((item, i) => (
           <label key={i} onClick={() => toggle(i)}
-            className={`flex items-start p-3 rounded-lg border cursor-pointer transition-all
-              `} style={checked[i]?{background:"var(--success-light)",borderColor:"var(--success-mid)"}:{background:"var(--bg)",borderColor:"var(--border)"}}>
-            <div className={`w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5 mr-3 flex-shrink-0 transition-all
-              `} style={checked[i]?{background:"var(--success)",borderColor:"var(--success)"}:{borderColor:"var(--border)"}}>
+            className="flex items-start p-3.5 rounded-xl border cursor-pointer transition-all" style={checked[i]?{background:"var(--success-light)",borderColor:"var(--success-mid)"}:{background:"var(--bg)",borderColor:"var(--border)"}}>
+            <div className="w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5 mr-3 flex-shrink-0 transition-all" style={checked[i]?{background:"var(--success)",borderColor:"var(--success)"}:{borderColor:"var(--border)"}}>
               {checked[i] && <span className="text-white text-xs font-bold">✓</span>}
             </div>
             <div>
@@ -557,18 +554,14 @@ function CalculatorTab() {
       {/* 모드 선택 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <button onClick={() => { setMode("doc"); setResult(null); }}
-          className={`p-4 rounded-xl border-2 text-left transition-all ${mode === "doc"
-            ? "border-[var(--brand)] bg-[var(--brand-light)]"
-            : "border-[var(--border)] bg-white hover:border-gray-300"}`}>
-          <div className={`text-sm font-bold mb-1`} style={{color:mode==="doc"?"var(--brand-dark)":"var(--text-main)"}}>
+          className="p-4 rounded-xl border-2 text-left transition-all" style={{borderColor:mode==="doc"?"var(--brand)":"var(--border)",background:mode==="doc"?"var(--brand-light)":"var(--surface)"}}>
+          <div className="text-sm font-bold mb-1" style={{color:mode==="doc"?"var(--brand-dark)":"var(--text-main)"}}>
             학력증빙서류가 있는 경우
           </div>
           <p className="text-xs text-gray-500">재학증명서·성적증명서로 외국 학제 기반 학년 산정</p>
         </button>
         <button onClick={() => { setMode("nodoc"); setResult(null); }}
-          className={`p-4 rounded-xl border-2 text-left transition-all ${mode === "nodoc"
-            ? "border-[var(--brand)] bg-[var(--brand-light)]"
-            : "border-[var(--border)] bg-white hover:border-gray-300"}`}>
+          className="p-4 rounded-xl border-2 text-left transition-all" style={{borderColor:mode==="nodoc"?"var(--brand)":"var(--border)",background:mode==="nodoc"?"var(--brand-light)":"var(--surface)"}}>
           <div className="text-sm font-bold mb-1" style={{color:mode==="nodoc"?"var(--brand-dark)":"var(--text-main)"}}>
             학력 증명이 곤란한 경우
           </div>
@@ -1175,10 +1168,7 @@ function ApostilleTab() {
         <div className="flex flex-wrap gap-1.5 mb-4">
           {["베트남","중국","필리핀","인도네시아","몽골","미국","방글라데시","캄보디아","태국","일본","러시아","카자흐스탄","우즈베키스탄"].map(c => (
             <button key={c} onClick={() => { setCountry(c); doSearch(c); }}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-colors
-                ${history.includes(c)
-                  ? "border-[var(--brand-mid)]"
-                  : "border-[var(--border)]"`} style={history.includes(c)?{background:"var(--brand-light)",color:"var(--brand)"}:{background:"var(--bg)",color:"var(--text-sub)"}}>
+              className="text-xs px-2.5 py-1 rounded-full border transition-colors" style={history.includes(c)?{background:"var(--brand-light)",color:"var(--brand)",borderColor:"var(--brand-mid)"}:{background:"var(--bg)",color:"var(--text-sub)",borderColor:"var(--border)"}}>
               {c}
             </button>
           ))}
@@ -1957,7 +1947,7 @@ function QnaTab() {
                 className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all
                   ${isActive
                     ? "text-white border-transparent"
-                    : "border-[var(--border)]"`} style={isActive ? (color ? {background:color.badge,color:"#fff"} : {background:"var(--brand)",color:"#fff"}) : {background:"var(--surface)",color:"var(--text-sub)"}}>
+                    "" style={isActive ? (color ? {background:color.badge,color:"#fff"} : {background:"var(--brand)",color:"#fff"}) : {background:"var(--surface)",color:"var(--text-sub)",borderColor:"var(--border)"}}>
                 {cat}
                 {cat !== "전체" && (
                   <span className="ml-1 opacity-70">
