@@ -937,118 +937,200 @@ const APOSTILLE_DB = {
   ZA: { joined: "1995-01-27" },
 };
 
-// ── REST Countries API 한→영 검색어 힌트 ────────────────────────────────
-// REST Countries API가 일부 한국어 국가명을 인식하지 못할 경우를 대비한 보조 매핑
-const KO_EN_HINTS = {
-  "대한민국": "korea", "한국": "korea",
-  "미국": "united states", "미합중국": "united states",
-  "영국": "united kingdom",
-  "중국": "china",
-  "홍콩": "hong kong",
-  "마카오": "macao",
-  "대만": "taiwan",
-  "일본": "japan",
-  "독일": "germany",
-  "프랑스": "france",
-  "러시아": "russia",
-  "베트남": "vietnam",
-  "캄보디아": "cambodia",
-  "태국": "thailand",
-  "미얀마": "myanmar",
-  "필리핀": "philippines",
-  "인도네시아": "indonesia",
-  "인도": "india",
-  "방글라데시": "bangladesh",
-  "파키스탄": "pakistan",
-  "네팔": "nepal",
-  "스리랑카": "sri lanka",
-  "카자흐스탄": "kazakhstan",
-  "우즈베키스탄": "uzbekistan",
-  "키르기스스탄": "kyrgyzstan",
-  "타지키스탄": "tajikistan",
-  "투르크메니스탄": "turkmenistan",
-  "몽골": "mongolia",
-  "싱가포르": "singapore",
-  "말레이시아": "malaysia",
-  "브루나이": "brunei",
-  "호주": "australia",
-  "뉴질랜드": "new zealand",
-  "이스라엘": "israel",
-  "사우디아라비아": "saudi arabia",
-  "아랍에미리트": "united arab emirates",
-  "카타르": "qatar",
-  "쿠웨이트": "kuwait",
-  "오만": "oman",
-  "바레인": "bahrain",
-  "요르단": "jordan",
-  "터키": "turkey", "튀르키예": "turkey",
-  "이란": "iran",
-  "이라크": "iraq",
-  "아르메니아": "armenia",
-  "아제르바이잔": "azerbaijan",
-  "조지아": "georgia",
-  "이탈리아": "italy",
-  "스페인": "spain",
-  "포르투갈": "portugal",
-  "네덜란드": "netherlands",
-  "벨기에": "belgium",
-  "스위스": "switzerland",
-  "오스트리아": "austria",
-  "스웨덴": "sweden",
-  "노르웨이": "norway",
-  "덴마크": "denmark",
-  "핀란드": "finland",
-  "폴란드": "poland",
-  "체코": "czech republic",
-  "헝가리": "hungary",
-  "루마니아": "romania",
-  "불가리아": "bulgaria",
-  "크로아티아": "croatia",
-  "세르비아": "serbia",
-  "슬로바키아": "slovakia",
-  "슬로베니아": "slovenia",
-  "그리스": "greece",
-  "우크라이나": "ukraine",
-  "라트비아": "latvia",
-  "리투아니아": "lithuania",
-  "에스토니아": "estonia",
-  "캐나다": "canada",
-  "멕시코": "mexico",
-  "브라질": "brazil",
-  "아르헨티나": "argentina",
-  "칠레": "chile",
-  "콜롬비아": "colombia",
-  "페루": "peru",
-  "에콰도르": "ecuador",
-  "베네수엘라": "venezuela",
-  "볼리비아": "bolivia",
-  "파라과이": "paraguay",
-  "우루과이": "uruguay",
-  "파나마": "panama",
-  "코스타리카": "costa rica",
-  "과테말라": "guatemala",
-  "온두라스": "honduras",
-  "엘살바도르": "el salvador",
-  "니카라과": "nicaragua",
-  "남아프리카": "south africa", "남아공": "south africa",
-  "이집트": "egypt",
-  "나이지리아": "nigeria",
-  "가나": "ghana",
-  "케냐": "kenya",
-  "에티오피아": "ethiopia",
-  "모로코": "morocco",
-  "세네갈": "senegal",
-  "르완다": "rwanda",
-  "모잠비크": "mozambique",
-  "나미비아": "namibia",
-  "보츠와나": "botswana",
-  "말라위": "malawi",
-  "모리셔스": "mauritius",
-  "세이셸": "seychelles",
-  "라이베리아": "liberia",
-  "레소토": "lesotho",
-  "에스와티니": "eswatini",
+// ── 내장 국가 데이터베이스 (외부 API 불필요) ──────────────────────────────
+// { cca2코드: { ko: 한국어명, en: 영문명, flag: 국기이모지, aliases: [추가검색어] } }
+const COUNTRY_DB = {
+  // 아시아·대양주
+  AF: { ko:"아프가니스탄", en:"Afghanistan", flag:"🇦🇫" },
+  AU: { ko:"호주",         en:"Australia",   flag:"🇦🇺", aliases:["오스트레일리아"] },
+  BD: { ko:"방글라데시",   en:"Bangladesh",  flag:"🇧🇩" },
+  BN: { ko:"브루나이",     en:"Brunei",      flag:"🇧🇳" },
+  CK: { ko:"쿡 제도",     en:"Cook Islands",flag:"🇨🇰" },
+  CN: { ko:"중국",         en:"China",       flag:"🇨🇳" },
+  FJ: { ko:"피지",         en:"Fiji",        flag:"🇫🇯" },
+  HK: { ko:"홍콩",         en:"Hong Kong",   flag:"🇭🇰" },
+  ID: { ko:"인도네시아",   en:"Indonesia",   flag:"🇮🇩" },
+  IL: { ko:"이스라엘",     en:"Israel",      flag:"🇮🇱" },
+  IN: { ko:"인도",         en:"India",       flag:"🇮🇳" },
+  JP: { ko:"일본",         en:"Japan",       flag:"🇯🇵" },
+  KG: { ko:"키르기스스탄", en:"Kyrgyzstan",  flag:"🇰🇬", aliases:["키르기즈스탄"] },
+  KH: { ko:"캄보디아",     en:"Cambodia",    flag:"🇰🇭" },
+  KR: { ko:"대한민국",     en:"South Korea", flag:"🇰🇷", aliases:["한국"] },
+  KZ: { ko:"카자흐스탄",   en:"Kazakhstan",  flag:"🇰🇿" },
+  LA: { ko:"라오스",       en:"Laos",        flag:"🇱🇦" },
+  LK: { ko:"스리랑카",     en:"Sri Lanka",   flag:"🇱🇰" },
+  MH: { ko:"마샬 제도",   en:"Marshall Islands", flag:"🇲🇭" },
+  MM: { ko:"미얀마",       en:"Myanmar",     flag:"🇲🇲", aliases:["버마"] },
+  MN: { ko:"몽골",         en:"Mongolia",    flag:"🇲🇳" },
+  MO: { ko:"마카오",       en:"Macao",       flag:"🇲🇴", aliases:["마카우"] },
+  MU: { ko:"모리셔스",     en:"Mauritius",   flag:"🇲🇺" },
+  MV: { ko:"몰디브",       en:"Maldives",    flag:"🇲🇻" },
+  MY: { ko:"말레이시아",   en:"Malaysia",    flag:"🇲🇾" },
+  NP: { ko:"네팔",         en:"Nepal",       flag:"🇳🇵" },
+  NR: { ko:"나우루",       en:"Nauru",       flag:"🇳🇷" },
+  NU: { ko:"니우에",       en:"Niue",        flag:"🇳🇺" },
+  NZ: { ko:"뉴질랜드",     en:"New Zealand", flag:"🇳🇿" },
+  PH: { ko:"필리핀",       en:"Philippines", flag:"🇵🇭" },
+  PK: { ko:"파키스탄",     en:"Pakistan",    flag:"🇵🇰" },
+  PW: { ko:"팔라우",       en:"Palau",       flag:"🇵🇼" },
+  SC: { ko:"세이셸",       en:"Seychelles",  flag:"🇸🇨" },
+  SG: { ko:"싱가포르",     en:"Singapore",   flag:"🇸🇬" },
+  TH: { ko:"태국",         en:"Thailand",    flag:"🇹🇭" },
+  TJ: { ko:"타지키스탄",   en:"Tajikistan",  flag:"🇹🇯" },
+  TL: { ko:"동티모르",     en:"East Timor",  flag:"🇹🇱" },
+  TM: { ko:"투르크메니스탄", en:"Turkmenistan", flag:"🇹🇲" },
+  TO: { ko:"통가",         en:"Tonga",       flag:"🇹🇴" },
+  TW: { ko:"대만",         en:"Taiwan",      flag:"🇹🇼" },
+  UZ: { ko:"우즈베키스탄", en:"Uzbekistan",  flag:"🇺🇿" },
+  VN: { ko:"베트남",       en:"Vietnam",     flag:"🇻🇳" },
+  VU: { ko:"바누아투",     en:"Vanuatu",     flag:"🇻🇺" },
+  WS: { ko:"사모아",       en:"Samoa",       flag:"🇼🇸" },
+  // 중동
+  AE: { ko:"아랍에미리트", en:"UAE",         flag:"🇦🇪", aliases:["UAE","두바이"] },
+  AM: { ko:"아르메니아",   en:"Armenia",     flag:"🇦🇲" },
+  AZ: { ko:"아제르바이잔", en:"Azerbaijan",  flag:"🇦🇿" },
+  BH: { ko:"바레인",       en:"Bahrain",     flag:"🇧🇭" },
+  GE: { ko:"조지아",       en:"Georgia",     flag:"🇬🇪", aliases:["그루지야"] },
+  IQ: { ko:"이라크",       en:"Iraq",        flag:"🇮🇶" },
+  IR: { ko:"이란",         en:"Iran",        flag:"🇮🇷" },
+  JO: { ko:"요르단",       en:"Jordan",      flag:"🇯🇴" },
+  KW: { ko:"쿠웨이트",     en:"Kuwait",      flag:"🇰🇼" },
+  LB: { ko:"레바논",       en:"Lebanon",     flag:"🇱🇧" },
+  OM: { ko:"오만",         en:"Oman",        flag:"🇴🇲" },
+  QA: { ko:"카타르",       en:"Qatar",       flag:"🇶🇦" },
+  SA: { ko:"사우디아라비아", en:"Saudi Arabia", flag:"🇸🇦", aliases:["사우디"] },
+  TR: { ko:"튀르키예",     en:"Turkey",      flag:"🇹🇷", aliases:["터키"] },
+  // 유럽
+  AD: { ko:"안도라",       en:"Andorra",     flag:"🇦🇩" },
+  AL: { ko:"알바니아",     en:"Albania",     flag:"🇦🇱" },
+  AT: { ko:"오스트리아",   en:"Austria",     flag:"🇦🇹" },
+  BA: { ko:"보스니아헤르체고비나", en:"Bosnia and Herzegovina", flag:"🇧🇦", aliases:["보스니아"] },
+  BE: { ko:"벨기에",       en:"Belgium",     flag:"🇧🇪" },
+  BG: { ko:"불가리아",     en:"Bulgaria",    flag:"🇧🇬" },
+  BY: { ko:"벨라루스",     en:"Belarus",     flag:"🇧🇾" },
+  CH: { ko:"스위스",       en:"Switzerland", flag:"🇨🇭" },
+  CY: { ko:"키프로스",     en:"Cyprus",      flag:"🇨🇾" },
+  CZ: { ko:"체코",         en:"Czech Republic", flag:"🇨🇿", aliases:["체코 공화국"] },
+  DE: { ko:"독일",         en:"Germany",     flag:"🇩🇪" },
+  DK: { ko:"덴마크",       en:"Denmark",     flag:"🇩🇰" },
+  EE: { ko:"에스토니아",   en:"Estonia",     flag:"🇪🇪" },
+  ES: { ko:"스페인",       en:"Spain",       flag:"🇪🇸" },
+  FI: { ko:"핀란드",       en:"Finland",     flag:"🇫🇮" },
+  FR: { ko:"프랑스",       en:"France",      flag:"🇫🇷" },
+  GB: { ko:"영국",         en:"United Kingdom", flag:"🇬🇧", aliases:["UK","United Kingdom"] },
+  GR: { ko:"그리스",       en:"Greece",      flag:"🇬🇷" },
+  HR: { ko:"크로아티아",   en:"Croatia",     flag:"🇭🇷" },
+  HU: { ko:"헝가리",       en:"Hungary",     flag:"🇭🇺" },
+  IE: { ko:"아일랜드",     en:"Ireland",     flag:"🇮🇪" },
+  IS: { ko:"아이슬란드",   en:"Iceland",     flag:"🇮🇸" },
+  IT: { ko:"이탈리아",     en:"Italy",       flag:"🇮🇹" },
+  LI: { ko:"리히텐슈타인", en:"Liechtenstein", flag:"🇱🇮" },
+  LT: { ko:"리투아니아",   en:"Lithuania",   flag:"🇱🇹" },
+  LU: { ko:"룩셈부르크",   en:"Luxembourg",  flag:"🇱🇺" },
+  LV: { ko:"라트비아",     en:"Latvia",      flag:"🇱🇻" },
+  MC: { ko:"모나코",       en:"Monaco",      flag:"🇲🇨" },
+  MD: { ko:"몰도바",       en:"Moldova",     flag:"🇲🇩" },
+  ME: { ko:"몬테네그로",   en:"Montenegro",  flag:"🇲🇪" },
+  MK: { ko:"북마케도니아", en:"North Macedonia", flag:"🇲🇰", aliases:["마케도니아"] },
+  MT: { ko:"몰타",         en:"Malta",       flag:"🇲🇹" },
+  NL: { ko:"네덜란드",     en:"Netherlands", flag:"🇳🇱", aliases:["화란"] },
+  NO: { ko:"노르웨이",     en:"Norway",      flag:"🇳🇴" },
+  PL: { ko:"폴란드",       en:"Poland",      flag:"🇵🇱" },
+  PT: { ko:"포르투갈",     en:"Portugal",    flag:"🇵🇹" },
+  RO: { ko:"루마니아",     en:"Romania",     flag:"🇷🇴" },
+  RS: { ko:"세르비아",     en:"Serbia",      flag:"🇷🇸" },
+  RU: { ko:"러시아",       en:"Russia",      flag:"🇷🇺" },
+  SE: { ko:"스웨덴",       en:"Sweden",      flag:"🇸🇪" },
+  SI: { ko:"슬로베니아",   en:"Slovenia",    flag:"🇸🇮" },
+  SK: { ko:"슬로바키아",   en:"Slovakia",    flag:"🇸🇰" },
+  SM: { ko:"산마리노",     en:"San Marino",  flag:"🇸🇲" },
+  UA: { ko:"우크라이나",   en:"Ukraine",     flag:"🇺🇦" },
+  XK: { ko:"코소보",         en:"Kosovo",      flag:"🇽🇰" },
+  // 아메리카
+  AG: { ko:"앤티가 바부다", en:"Antigua and Barbuda", flag:"🇦🇬" },
+  AR: { ko:"아르헨티나",   en:"Argentina",   flag:"🇦🇷" },
+  BB: { ko:"바베이도스",   en:"Barbados",    flag:"🇧🇧" },
+  BO: { ko:"볼리비아",     en:"Bolivia",     flag:"🇧🇴" },
+  BR: { ko:"브라질",       en:"Brazil",      flag:"🇧🇷" },
+  BS: { ko:"바하마",       en:"Bahamas",     flag:"🇧🇸" },
+  BZ: { ko:"벨리즈",       en:"Belize",      flag:"🇧🇿" },
+  CA: { ko:"캐나다",       en:"Canada",      flag:"🇨🇦" },
+  CL: { ko:"칠레",         en:"Chile",       flag:"🇨🇱" },
+  CO: { ko:"콜롬비아",     en:"Colombia",    flag:"🇨🇴" },
+  CR: { ko:"코스타리카",   en:"Costa Rica",  flag:"🇨🇷" },
+  CU: { ko:"쿠바",         en:"Cuba",        flag:"🇨🇺" },
+  DO: { ko:"도미니카 공화국", en:"Dominican Republic", flag:"🇩🇴", aliases:["도미니카공화국"] },
+  EC: { ko:"에콰도르",     en:"Ecuador",     flag:"🇪🇨" },
+  DM: { ko:"도미니카연방", en:"Dominica",    flag:"🇩🇲", aliases:["도미니카"] },
+  GD: { ko:"그레나다",     en:"Grenada",     flag:"🇬🇩" },
+  GY: { ko:"가이아나",     en:"Guyana",      flag:"🇬🇾" },
+  GT: { ko:"과테말라",     en:"Guatemala",   flag:"🇬🇹" },
+  HN: { ko:"온두라스",     en:"Honduras",    flag:"🇭🇳" },
+  HT: { ko:"아이티",       en:"Haiti",       flag:"🇭🇹" },
+  JM: { ko:"자메이카",     en:"Jamaica",     flag:"🇯🇲" },
+  KN: { ko:"세인트키츠 네비스", en:"Saint Kitts and Nevis", flag:"🇰🇳" },
+  LC: { ko:"세인트루시아", en:"Saint Lucia", flag:"🇱🇨" },
+  MX: { ko:"멕시코",       en:"Mexico",      flag:"🇲🇽" },
+  NI: { ko:"니카라과",     en:"Nicaragua",   flag:"🇳🇮" },
+  PA: { ko:"파나마",       en:"Panama",      flag:"🇵🇦" },
+  PE: { ko:"페루",         en:"Peru",        flag:"🇵🇪" },
+  PY: { ko:"파라과이",     en:"Paraguay",    flag:"🇵🇾" },
+  SR: { ko:"수리남",       en:"Suriname",    flag:"🇸🇷" },
+  SV: { ko:"엘살바도르",   en:"El Salvador", flag:"🇸🇻" },
+  TT: { ko:"트리니다드 토바고", en:"Trinidad and Tobago", flag:"🇹🇹", aliases:["트리니다드토바고"] },
+  US: { ko:"미국",         en:"United States", flag:"🇺🇸", aliases:["미합중국","USA"] },
+  UY: { ko:"우루과이",     en:"Uruguay",     flag:"🇺🇾" },
+  VC: { ko:"세인트빈센트 그레나딘", en:"Saint Vincent and the Grenadines", flag:"🇻🇨" },
+  VE: { ko:"베네수엘라",   en:"Venezuela",   flag:"🇻🇪" },
+  // 아프리카
+  BW: { ko:"보츠와나",     en:"Botswana",    flag:"🇧🇼" },
+  CV: { ko:"카보베르데",   en:"Cape Verde",  flag:"🇨🇻", aliases:["카보 베르데"] },
+  EG: { ko:"이집트",       en:"Egypt",       flag:"🇪🇬" },
+  ET: { ko:"에티오피아",   en:"Ethiopia",    flag:"🇪🇹" },
+  GH: { ko:"가나",         en:"Ghana",       flag:"🇬🇭" },
+  KE: { ko:"케냐",         en:"Kenya",       flag:"🇰🇪" },
+  LR: { ko:"라이베리아",   en:"Liberia",     flag:"🇱🇷" },
+  LS: { ko:"레소토",       en:"Lesotho",     flag:"🇱🇸" },
+  MA: { ko:"모로코",       en:"Morocco",     flag:"🇲🇦" },
+  MW: { ko:"말라위",       en:"Malawi",      flag:"🇲🇼" },
+  MZ: { ko:"모잠비크",     en:"Mozambique",  flag:"🇲🇿" },
+  NA: { ko:"나미비아",     en:"Namibia",     flag:"🇳🇦" },
+  NG: { ko:"나이지리아",   en:"Nigeria",     flag:"🇳🇬" },
+  BI: { ko:"브룬디",       en:"Burundi",     flag:"🇧🇮" },
+  RW: { ko:"르완다",       en:"Rwanda",      flag:"🇷🇼" },
+  ST: { ko:"상투메프린시페", en:"Sao Tome and Principe", flag:"🇸🇹" },
+  TN: { ko:"튀니지",       en:"Tunisia",     flag:"🇹🇳" },
+  SN: { ko:"세네갈",       en:"Senegal",     flag:"🇸🇳" },
+  SZ: { ko:"에스와티니",   en:"Eswatini",    flag:"🇸🇿", aliases:["스와질란드"] },
+  TZ: { ko:"탄자니아",     en:"Tanzania",    flag:"🇹🇿" },
+  UG: { ko:"우간다",       en:"Uganda",      flag:"🇺🇬" },
+  ZA: { ko:"남아프리카공화국", en:"South Africa", flag:"🇿🇦", aliases:["남아공","남아프리카"] },
+  ZM: { ko:"잠비아",       en:"Zambia",      flag:"🇿🇲" },
+  ZW: { ko:"짐바브웨",     en:"Zimbabwe",    flag:"🇿🇼" },
 };
+
+// 검색어 → cca2 코드 반환 (한국어·영어·별칭 모두 지원)
+function findCountry(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return null;
+  for (const [code, info] of Object.entries(COUNTRY_DB)) {
+    if (
+      info.ko.toLowerCase() === q ||
+      info.en.toLowerCase() === q ||
+      code.toLowerCase() === q ||
+      (info.aliases || []).some(a => a.toLowerCase() === q)
+    ) return { code, ...info };
+  }
+  // 부분 일치 (포함 검색)
+  for (const [code, info] of Object.entries(COUNTRY_DB)) {
+    if (
+      info.ko.includes(query.trim()) ||
+      info.en.toLowerCase().includes(q) ||
+      (info.aliases || []).some(a => a.toLowerCase().includes(q))
+    ) return { code, ...info };
+  }
+  return null;
+}
 
 // ── 아포스티유 탭 ────────────────────────────────────────────────────────
 function ApostilleTab() {
@@ -1058,68 +1140,43 @@ function ApostilleTab() {
   const [errorMsg, setErrorMsg] = useState("");
   const [history, setHistory] = useState([]);
 
-  const doSearch = useCallback(async (query) => {
-    if (!query.trim()) return;
+  const doSearch = useCallback((query) => {
+    const q = query.trim();
+    if (!q) return;
     setStatus("loading");
     setResult(null);
     setErrorMsg("");
 
-    try {
-      // 1단계: REST Countries API로 국가명 정규화 및 alpha-2 코드 취득
-      const searchTerm = KO_EN_HINTS[query.trim()] || query.trim();
-      const apiUrl = `https://restcountries.com/v3.1/name/${encodeURIComponent(searchTerm)}?fields=name,cca2,flag,translations`;
-
-      const resp = await fetch(apiUrl);
-      if (!resp.ok) {
-        if (resp.status === 404) throw new Error(`"${query}"에 해당하는 국가를 찾을 수 없습니다. 다른 국가명으로 시도해보세요.`);
-        throw new Error(`국가 정보 조회 실패 (HTTP ${resp.status})`);
-      }
-
-      const list = await resp.json();
-      if (!Array.isArray(list) || list.length === 0) {
-        throw new Error(`"${query}"에 해당하는 국가를 찾을 수 없습니다.`);
-      }
-
-      // 정확히 일치하는 국가 우선 선택
-      const exact = list.find(c =>
-        c.name.common.toLowerCase() === searchTerm.toLowerCase() ||
-        (c.translations?.kor?.common || "").toLowerCase() === query.trim().toLowerCase()
-      );
-      const matched = exact || list[0];
-
-      const cca2 = matched.cca2;
-      const nameEn = matched.name.common;
-      const nameKo = matched.translations?.kor?.common || query;
-      const flag = matched.flag || "";
-
-      // 2단계: 자체 APOSTILLE_DB 조회
-      const dbEntry = APOSTILLE_DB[cca2] || null;
-      const isMember = !!dbEntry;
-
-      // 홍콩/마카오 특수 처리: 중국(CN) 입력 시 안내
-      let note = dbEntry?.note || null;
-      if (cca2 === "CN" && !isMember) {
-        note = "중국 본토는 미가입국입니다. 홍콩(HK) 또는 마카오(MO)는 별도 가입되어 있으니 해당 지역 발급 서류인지 확인하세요.";
-      }
-
-      setResult({
-        country_ko: nameKo,
-        country_en: nameEn,
-        flag,
-        cca2,
-        is_member: isMember,
-        join_date: dbEntry?.joined || null,
-        note,
-        search_date: new Date().toISOString().split("T")[0],
-      });
-      setStatus("done");
-
-      const label = nameKo || query;
-      setHistory(h => [label, ...h.filter(x => x !== label)].slice(0, 8));
-    } catch (e) {
-      setErrorMsg(e.message || "알 수 없는 오류");
+    // 내장 COUNTRY_DB에서 즉시 조회 (외부 API 불필요)
+    const found = findCountry(q);
+    if (!found) {
+      setErrorMsg(`"${q}"에 해당하는 국가를 찾을 수 없습니다. 한국어 또는 영어 국가명으로 입력해 보세요.`);
       setStatus("error");
+      return;
     }
+
+    const { code: cca2, ko: nameKo, en: nameEn, flag } = found;
+    const dbEntry = APOSTILLE_DB[cca2] || null;
+    const isMember = !!dbEntry;
+
+    // 중국 본토 특수 안내
+    let note = dbEntry?.note || null;
+    if (cca2 === "CN" && !isMember) {
+      note = "중국 본토는 미가입국입니다. 홍콩(HK) 또는 마카오(MO)는 별도 가입되어 있으니 해당 지역 발급 서류인지 확인하세요.";
+    }
+
+    setResult({
+      country_ko: nameKo,
+      country_en: nameEn,
+      flag,
+      cca2,
+      is_member: isMember,
+      join_date: dbEntry?.joined || null,
+      note,
+      search_date: new Date().toISOString().split("T")[0],
+    });
+    setStatus("done");
+    setHistory(h => [nameKo, ...h.filter(x => x !== nameKo)].slice(0, 8));
   }, []);
 
   const handleSubmit = () => doSearch(country);
