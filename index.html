@@ -146,19 +146,36 @@ const TAB_TITLES = {
 // ╚══════════════════════════════════════════════════════╝
 const VALID_TABS = new Set(["home","wizard","checklist","calculator","apostille","neis","qna"]);
 
-function getHashTab() {
+// URL에 해시를 남기지 않고 history.state로만 탭을 기억한다.
+// (기존 #wizard 형태의 북마크로 들어온 경우 첫 진입 때만 해시를 읽고 곧바로 지운다)
+function getInitialTab() {
   const hash = location.hash.replace("#", "");
   return VALID_TABS.has(hash) ? hash : "home";
 }
 
+function getStateTab() {
+  const t = history.state && history.state.tab;
+  return VALID_TABS.has(t) ? t : "home";
+}
+
 function App() {
-  const [activeTab, setActiveTab] = useState(getHashTab);
+  const [activeTab, setActiveTab] = useState(getInitialTab);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // 첫 진입 시 남아 있는 해시 제거 + 현재 탭을 history.state에 기록
+  useEffect(() => {
+    try {
+      history.replaceState({ tab: activeTab }, "", location.pathname + location.search);
+    } catch (e) {
+      // file:// 로 직접 열었을 때는 URL 변경이 차단되므로 state만 기록
+      try { history.replaceState({ tab: activeTab }, ""); } catch (e2) {}
+    }
+  }, []);
 
   // 뒤로가기 / 앞으로가기 감지
   useEffect(() => {
     const onPop = () => {
-      setActiveTab(getHashTab());
+      setActiveTab(getStateTab());
       setDrawerOpen(false);
     };
     window.addEventListener("popstate", onPop);
@@ -166,8 +183,9 @@ function App() {
   }, []);
 
   const navigate = useCallback((id) => {
-    if (location.hash !== "#" + id) {
-      history.pushState(null, "", "#" + id);
+    if (getStateTab() !== id) {
+      // URL 인자를 넘기지 않으면 주소는 그대로 두고 기록만 쌓인다 → 해시가 붙지 않음
+      try { history.pushState({ tab: id }, ""); } catch (e) {}
     }
     setActiveTab(id);
     setDrawerOpen(false);
@@ -201,7 +219,8 @@ function App() {
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
 
         {/* 헤더 */}
-        <header className="bg-white border-b border-gray-200 px-4 sm:px-6 flex items-center gap-3 flex-shrink-0" style={{minHeight:"52px"}}>
+        <header className="bg-white border-b border-gray-200 px-3 sm:px-7 flex-shrink-0" style={{minHeight:"52px"}}>
+         <div className="w-full max-w-5xl xl:max-w-6xl h-full flex items-center gap-3" style={{minHeight:"52px"}}>
           <button
             onClick={() => setDrawerOpen(true)}
             className="lg:hidden flex-shrink-0 flex items-center justify-center w-8 h-8 text-gray-500 hover:text-gray-800 transition-colors"
@@ -219,11 +238,12 @@ function App() {
             <h2 className="text-sm font-bold text-gray-800 truncate">{TAB_TITLES[activeTab]}</h2>
             <span className="hidden sm:inline bg-amber-100 text-amber-700 text-[12px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap flex-shrink-0">초등 전용</span>
           </div>
+         </div>
         </header>
 
         {/* 메인 콘텐츠 */}
         <main className="flex-1 overflow-y-auto px-3 py-5 sm:p-7">
-          <div className="max-w-4xl mx-auto space-y-4">
+          <div className="w-full max-w-5xl xl:max-w-6xl space-y-4">
             {activeTab === "home"       && <HomeTab      onNav={navigate} />}
             {activeTab === "wizard"     && <WizardTab />}
             {activeTab === "checklist"  && <ChecklistTab />}
@@ -321,6 +341,20 @@ function HomeTab({ onNav }) {
 // ║  입교 유형 판별 탭                                   ║
 // ╚══════════════════════════════════════════════════════╝
 
+// 학적 용어 참고표 — WizardTab 우측 상시 표시
+const TERM_REFS = [
+  { term: "입학 (신입학)", box: "bg-indigo-50 border-indigo-200", title: "text-indigo-800",
+    desc: "초등 1학년 신입생 모집 시기에 처음 학적을 만드는 경우" },
+  { term: "취학 (정원외 취학)", box: "bg-amber-50 border-amber-200", title: "text-amber-800",
+    desc: "국내 학교 이력이 전혀 없는 학생이 1학년 신입학 시기 외에 처음 들어오는 경우" },
+  { term: "편입학", box: "bg-emerald-50 border-emerald-200", title: "text-emerald-800",
+    desc: "외국 학교 등에서 이수한 학력을 인정받아 해당 학년으로 들어오는 경우" },
+  { term: "재입학", box: "bg-sky-50 border-sky-200", title: "text-sky-800",
+    desc: "학업을 중단했던 학생이 같은 학교에 다시 들어오는 경우" },
+  { term: "전입학", box: "bg-violet-50 border-violet-200", title: "text-violet-800",
+    desc: "국내 다른 학교에 재학 중이던 학생이 학적을 옮겨 오는 경우" },
+];
+
 // WizardTab 외부 정의 — 내부 정의 시 매 렌더마다 리마운트되어 포커스 손실
 function RadioGroup({ name, value, onChange, options }) {
   return (
@@ -348,7 +382,8 @@ function WizardTab() {
   })();
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200 shadow-sm space-y-5">
+   <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
+    <div className="lg:col-span-3 bg-white p-4 sm:p-6 rounded-xl border border-gray-200 shadow-sm space-y-5">
       <h3 className="text-sm sm:text-base font-bold text-indigo-900 flex items-center gap-2"><Wand2 size={15} />질문에 답하며 학생의 입교 유형을 확인하세요</h3>
       <div className="border-b pb-5">
         <p className="font-semibold text-gray-700 text-sm mb-3">1. 학생이 국내 초등학교에 입학했거나 다녔던 이력이 있습니까?</p>
@@ -374,6 +409,29 @@ function WizardTab() {
         </div>
       )}
     </div>
+
+    {/* 학적 용어 상시 참고 카드 */}
+    <div className="lg:col-span-2 bg-white p-4 sm:p-5 rounded-xl border border-gray-200 shadow-sm">
+      <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-1">
+        <Tag size={13} className="text-indigo-500" />학적 용어 한눈에 보기
+      </h3>
+      <p className="text-[12px] text-gray-400 mb-3">답을 고르지 않아도 볼 수 있는 참고표입니다.</p>
+      <div className="space-y-2">
+        {TERM_REFS.map(t => (
+          <div key={t.term} className={`rounded-lg border p-3 ${t.box}`}>
+            <p className={`font-bold text-sm ${t.title}`}>{t.term}</p>
+            <p className="text-sm text-gray-600 mt-0.5 leading-relaxed">{t.desc}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
+        <AlertCircle size={13} className="text-red-500 mt-0.5 flex-shrink-0" />
+        <p className="text-sm text-red-700 leading-relaxed">
+          <strong>'취학'과 '전입학'</strong>을 가장 많이 혼동합니다. 국내 학교 이력이 <strong>전혀 없으면 취학</strong>, 국내 다른 학교에서 옮겨 오면 <strong>전입학</strong>입니다.
+        </p>
+      </div>
+    </div>
+   </div>
   );
 }
 
@@ -523,27 +581,10 @@ function CalculatorTab() {
     const n = parseInt(sems);
     if (isNaN(n) || n < 0) { alert("이수 학기 수를 올바르게 입력해주세요."); return; }
 
-    // 해당 학제에서 이수한 학기를 한국학제 학기로 환산
+    // 이수 학기를 한국 학제 학기에 그대로 누적 대응 (비율 환산하지 않음)
+    // 예) 외국 10학기 이수 → 한국 학제 10학기 이수로 보아 초등 6학년 배정
     const sys = selectedSys;
-    // 각 교급별 학기
-    const elemSemForeign = sys.elem * 2;
-    const midSemForeign  = sys.mid  * 2;
-
-    let krSem = 0;
-    if (n <= elemSemForeign) {
-      // 초등 범위: 외국 초등 학기 → 한국 초등 비율 환산
-      krSem = Math.round((n / (sys.elem * 2)) * KR.elemSem);
-    } else if (n <= elemSemForeign + midSemForeign) {
-      // 중학 범위
-      const midDone = n - elemSemForeign;
-      const midSemForeignTotal = sys.mid * 2 || 1;
-      krSem = KR.elemSem + Math.round((midDone / midSemForeignTotal) * KR.midSem);
-    } else {
-      // 고등 범위
-      const highDone = n - elemSemForeign - midSemForeign;
-      const highSemForeignTotal = sys.high * 2 || 1;
-      krSem = KR.elemSem + KR.midSem + Math.round((highDone / (highSemForeignTotal)) * KR.highSem);
-    }
+    const krSem = n;
 
     const info = semToGradeInfo(krSem);
 
@@ -554,7 +595,8 @@ function CalculatorTab() {
     // 연령 기준 (참고용)
     let ageInfo = null;
     if (birth) {
-      const age = 2026 - new Date(birth).getFullYear();
+      const thisYear = new Date().getFullYear();
+      const age = thisYear - new Date(birth).getFullYear();   // 연 나이(학년 산정 기준)
       const ageGrade = Math.min(Math.max(age - 6, 1), 6);
       ageInfo = { age, ageGrade };
     }
@@ -653,7 +695,7 @@ function CalculatorTab() {
                     ))}
                   </tbody>
                 </table>
-                <p className="text-sm text-gray-400 mt-2">※ 외국학교 재학증명서·성적증명서를 근거로 한국학제(12학년제)에 맞춰 계산합니다.</p>
+                <p className="text-sm text-gray-400 mt-2">※ 외국학교 재학증명서·성적증명서로 확인한 <strong>실제 이수 학기 수</strong>를 한국 학제(초등 12학기 → 중학 6학기 → 고등 6학기)에 순서대로 누적 대응시켜 학년을 산정합니다. 학제별 연한이 달라도 이수 학기 수는 그대로 인정되므로, 위 표는 '몇 학년 수료 = 몇 학기'를 확인하는 용도입니다.</p>
                 </div>
               </div>
             )}
@@ -668,7 +710,7 @@ function CalculatorTab() {
               <div className="space-y-4">
                 {/* 학제 선택 */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">출신국 학제 선택</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">출신국 학제 <span className="font-normal text-gray-400">(학년→학기 환산 참고용)</span></label>
                   <select value={sysId} onChange={e => { setSysId(e.target.value); setResult(null); }}
                     className="w-full border border-gray-300 rounded-lg p-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none">
                     {FOREIGN_SYSTEMS.map(s => (
@@ -689,7 +731,7 @@ function CalculatorTab() {
                     placeholder="예: 4학기 이수 → 4"
                     value={sems} onChange={e => { setSems(e.target.value); setResult(null); }}
                     className="w-full border border-gray-300 rounded-lg p-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-indigo-400 outline-none" />
-                  <p className="text-sm text-gray-400 mt-1 ml-1">1학기 = 6개월 / 1학년 = 2학기</p>
+                  <p className="text-sm text-gray-400 mt-1 ml-1">1학기 = 6개월 / 1학년 = 2학기 (예: 5학년 수료 → 10학기)</p>
                 </div>
 
                 {/* 생년월일 (선택) */}
@@ -733,19 +775,19 @@ function CalculatorTab() {
 
                     <div className="space-y-1.5 text-sm text-gray-600">
                       <p>• 외국 이수: <strong>{result.n}학기</strong>
-                        {" → "}학제 환산 후 <strong>{result.krSem}학기</strong>
+                        {" → "}한국 학제 <strong>{result.krSem}학기</strong> 이수로 대응
                       </p>
-                      <p>• 적용 학제: <strong>{result.sys.label}</strong></p>
+                      <p>• 참고 학제: <strong>{result.sys.label}</strong> (학년↔학기 환산용)</p>
                       {result.ageInfo && (
-                        <p>• 연령 참고: 만 <strong>{result.ageInfo.age}세</strong> (초등 {result.ageInfo.ageGrade}학년 연령)</p>
+                        <p>• 연령 참고: 연 나이 <strong>{result.ageInfo.age}세</strong> (초등 {result.ageInfo.ageGrade}학년 연령)</p>
                       )}
                     </div>
 
                     {/* 1학기 부족 허용 안내 */}
                     {result.shortOneSem && result.flexApplicable && (
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-2.5 text-sm text-blue-800">
-                        <p className="font-semibold">📌 1학기(6개월) 부족 특례 해당</p>
-                        <p className="mt-0.5">학제 차이로 한 학기가 부족하지만, 외국학교에서 국내 학교로 <strong>공백 없이 연속 취학</strong>하는 경우 학교장 판단에 따라 상위 학년 배정이 가능합니다.</p>
+                        <p className="font-semibold">📌 이수 학기가 홀수 — 1학기(6개월) 부족</p>
+                        <p className="mt-0.5">해당 학년을 마치는 데 한 학기가 부족한 상태입니다. 외국학교에서 국내 학교로 <strong>공백 없이 연속 취학</strong>하는 경우 학교장 판단에 따라 상위 학년 배정이 가능합니다.</p>
                       </div>
                     )}
 
@@ -797,145 +839,150 @@ function CalculatorTab() {
 
 // ── HCCH 아포스티유 협약 가입국 자체 데이터 (ISO alpha-2 키) ──────────────
 // 출처: HCCH(헤이그국제사법회의) 협약 제12호 가입국 현황
-// 데이터 기준일: 2025년 기준 / 미수록 국가 = 미가입국으로 처리
+// 데이터 기준일: HCCH 협약 제12호 현황표(2026-06-30 갱신) 기준 · 당사국 130개
+// joined = 해당 국가에 대한 협약 발효일(EIF). 발효일이 미래인 국가는 아직 영사확인 대상.
+// 미수록 국가 = 미가입국으로 처리 (예: 베트남은 2026.9.11., 태국은 2027.2.28. 발효 예정)
 const APOSTILLE_DB = {
   // ── 아시아·대양주 ──
-  AU: { joined: "1995-03-10" },
-  BD: { joined: "2025-05-30", note: "2025.05.30. 신규 가입" },
-  CK: { joined: "2009-02-23" },
-  FJ: { joined: "1971-08-09" },
-  HK: { joined: "1965-01-05", note: "중국 홍콩 특별행정구 (별도 가입)" },
-  ID: { joined: "2022-05-10", note: "2022년 신규 가입" },
-  IL: { joined: "1978-08-02" },
-  IN: { joined: "2005-01-11" },
-  JP: { joined: "1970-07-15" },
-  KR: { joined: "2007-07-14" },
-  KG: { joined: "2014-10-01" },
-  KZ: { joined: "2001-01-30" },
-  LK: { joined: "2002-01-17" },
-  MH: { joined: "2010-08-28" },
-  MN: { joined: "2009-09-02" },
-  MO: { joined: "1999-12-20", note: "중국 마카오 특별행정구 (별도 가입)" },
-  MU: { joined: "1997-12-19" },
-  NR: { joined: "2012-04-13" },
-  NU: { joined: "2014-10-01" },
-  NZ: { joined: "2002-05-30" },
-  PH: { joined: "1996-09-14" },
-  PW: { joined: "2015-01-04" },
-  SC: { joined: "2002-09-25" },
-  SG: { joined: "2021-09-16", note: "2021년 신규 가입" },
-  TJ: { joined: "2015-07-20" },
-  TM: { joined: "2001-06-29" },
-  TO: { joined: "2002-04-26" },
-  UZ: { joined: "2014-05-01" },
-  VU: { joined: "2012-04-25" },
-  WS: { joined: "2008-01-09" },
-
-  // ── 중동 ──
-  AE: { joined: "2009-01-31" },
-  AM: { joined: "1994-02-14" },
-  AZ: { joined: "2004-01-17" },
-  BH: { joined: "2013-05-31" },
-  GE: { joined: "1999-04-14" },
-  JO: { joined: "2018-01-17" },
-  KW: { joined: "2015-08-12" },
-  OM: { joined: "2012-06-04" },
-  QA: { joined: "2012-03-16" },
-  SA: { joined: "2012-12-13" },
-  TR: { joined: "1984-12-06" },
-
+  AU: { joined: "1995-03-16" },   // 호주
+  BD: { joined: "2025-03-30", note: "2025.03.30. 발효" },   // 방글라데시
+  BN: { joined: "1987-12-03" },   // 브루나이
+  CK: { joined: "2005-04-30" },   // 쿡제도
+  CN: { joined: "2023-11-07", note: "2023.11.07. 발효. 홍콩·마카오는 종전대로 적용됩니다." },   // 중국
+  FJ: { joined: "1970-10-10" },   // 피지
+  ID: { joined: "2022-06-04", note: "2022.06.04. 발효" },   // 인도네시아
+  IN: { joined: "2005-07-14" },   // 인도
+  JP: { joined: "1970-07-27" },   // 일본
+  KG: { joined: "2011-07-31" },   // 키르기스스탄
+  KR: { joined: "2007-07-14" },   // 대한민국
+  KZ: { joined: "2001-01-30" },   // 카자흐스탄
+  MH: { joined: "1992-08-14" },   // 마셜제도
+  MN: { joined: "2009-12-31" },   // 몽골
+  MU: { joined: "1968-03-12" },   // 모리셔스
+  NU: { joined: "1999-03-02" },   // 니우에
+  NZ: { joined: "2001-11-22" },   // 뉴질랜드
+  PH: { joined: "2019-05-14", note: "2019.05.14. 발효" },   // 필리핀
+  PK: { joined: "2023-03-09", note: "2023.03.09. 발효" },   // 파키스탄
+  PW: { joined: "2020-06-23" },   // 팔라우
+  SC: { joined: "1979-03-31" },   // 세이셸
+  SG: { joined: "2021-09-16", note: "2021.09.16. 발효" },   // 싱가포르
+  TH: { joined: "2027-02-28", note: "협약 가입은 완료되었으나 2027.2.28.부터 발효됩니다. 그 이전 발급 서류는 영사확인 대상입니다." },   // 태국
+  TJ: { joined: "2015-10-31" },   // 타지키스탄
+  TO: { joined: "1970-06-04" },   // 통가
+  UZ: { joined: "2012-04-15" },   // 우즈베키스탄
+  VN: { joined: "2026-09-11", note: "협약 가입은 완료되었으나 2026.9.11.부터 발효됩니다. 그 이전 발급 서류는 영사확인 대상입니다." },   // 베트남
+  VU: { joined: "1980-07-30" },   // 바누아투
+  WS: { joined: "1999-09-13" },   // 사모아
+  // ── 중동·서아시아 ──
+  AM: { joined: "1994-08-14" },   // 아르메니아
+  AZ: { joined: "2005-03-02" },   // 아제르바이잔
+  BH: { joined: "2013-12-31" },   // 바레인
+  GE: { joined: "2007-05-14" },   // 조지아
+  IL: { joined: "1978-08-14" },   // 이스라엘
+  OM: { joined: "2012-01-30" },   // 오만
+  SA: { joined: "2022-12-07", note: "2022.12.07. 발효" },   // 사우디아라비아
+  TR: { joined: "1985-09-29" },   // 튀르키예
   // ── 유럽 ──
-  AD: { joined: "1996-11-28" },
-  AL: { joined: "2004-03-12" },
-  AT: { joined: "1968-01-13" },
-  BA: { joined: "1993-01-06" },
-  BE: { joined: "1975-07-09" },
-  BG: { joined: "2001-08-29" },
-  BY: { joined: "1992-11-30" },
-  CH: { joined: "1973-09-05" },
-  CY: { joined: "1972-09-24" },
-  CZ: { joined: "1998-02-23" },
-  DE: { joined: "1965-04-30" },
-  DK: { joined: "1977-03-02" },
-  EE: { joined: "2001-02-26" },
-  ES: { joined: "1978-09-25" },
-  FI: { joined: "1985-05-11" },
-  FR: { joined: "1965-01-24" },
-  GB: { joined: "1965-01-24" },
-  GR: { joined: "1985-06-17" },
-  HR: { joined: "1991-10-08" },
-  HU: { joined: "1973-07-29" },
-  IE: { joined: "1999-10-09" },
-  IS: { joined: "2004-01-29" },
-  IT: { joined: "1978-02-11" },
-  LI: { joined: "1972-09-23" },
-  LT: { joined: "1996-01-22" },
-  LU: { joined: "1979-09-15" },
-  LV: { joined: "1996-09-25" },
-  MC: { joined: "2003-05-15" },
-  MD: { joined: "2007-03-16" },
-  ME: { joined: "2006-06-03" },
-  MK: { joined: "2000-02-08" },
-  MT: { joined: "1991-05-03" },
-  NL: { joined: "1965-02-26" },
-  NO: { joined: "1983-07-12" },
-  PL: { joined: "2005-08-14" },
-  PT: { joined: "1968-01-06" },
-  RO: { joined: "2001-01-16" },
-  RS: { joined: "2006-06-03" },
-  RU: { joined: "1992-05-31" },
-  SE: { joined: "1979-01-01" },
-  SI: { joined: "1992-06-25" },
-  SK: { joined: "2002-04-10" },
-  SM: { joined: "1994-12-01" },
-  UA: { joined: "2003-12-22" },
-
+  AD: { joined: "1996-12-31" },   // 안도라
+  AL: { joined: "2004-05-09" },   // 알바니아
+  AT: { joined: "1968-01-13" },   // 오스트리아
+  BA: { joined: "1992-03-06" },   // 보스니아헤르체고비나
+  BE: { joined: "1976-02-09" },   // 벨기에
+  BG: { joined: "2001-04-29" },   // 불가리아
+  BY: { joined: "1992-05-31" },   // 벨라루스
+  CH: { joined: "1973-03-11" },   // 스위스
+  CY: { joined: "1973-04-30" },   // 키프로스
+  CZ: { joined: "1999-03-16" },   // 체코
+  DE: { joined: "1966-02-13" },   // 독일
+  DK: { joined: "2006-12-29" },   // 덴마크
+  EE: { joined: "2001-09-30" },   // 에스토니아
+  ES: { joined: "1978-09-25" },   // 스페인
+  FI: { joined: "1985-08-26" },   // 핀란드
+  FR: { joined: "1965-01-24" },   // 프랑스
+  GB: { joined: "1965-01-24" },   // 영국
+  GR: { joined: "1985-05-18" },   // 그리스
+  HR: { joined: "1991-10-08" },   // 크로아티아
+  HU: { joined: "1973-01-18" },   // 헝가리
+  IE: { joined: "1999-03-09" },   // 아일랜드
+  IS: { joined: "2004-11-27" },   // 아이슬란드
+  IT: { joined: "1978-02-11" },   // 이탈리아
+  LI: { joined: "1972-09-17" },   // 리히텐슈타인
+  LT: { joined: "1997-07-19" },   // 리투아니아
+  LU: { joined: "1979-06-03" },   // 룩셈부르크
+  LV: { joined: "1996-01-30" },   // 라트비아
+  MC: { joined: "2002-12-31" },   // 모나코
+  MD: { joined: "2007-03-16" },   // 몰도바
+  ME: { joined: "2006-06-03" },   // 몬테네그로
+  MK: { joined: "1991-11-17" },   // 북마케도니아
+  MT: { joined: "1968-03-03" },   // 몰타
+  NL: { joined: "1965-10-08" },   // 네덜란드
+  NO: { joined: "1983-07-29" },   // 노르웨이
+  PL: { joined: "2005-08-14" },   // 폴란드
+  PT: { joined: "1969-02-04" },   // 포르투갈
+  RO: { joined: "2001-03-16" },   // 루마니아
+  RS: { joined: "1992-04-27" },   // 세르비아
+  RU: { joined: "1992-05-31" },   // 러시아
+  SE: { joined: "1999-05-01" },   // 스웨덴
+  SI: { joined: "1991-06-25" },   // 슬로베니아
+  SK: { joined: "2002-02-18" },   // 슬로바키아
+  SM: { joined: "1995-02-13" },   // 산마리노
+  UA: { joined: "2003-12-22" },   // 우크라이나
+  XK: { joined: "2016-07-14" },   // 코소보
   // ── 아메리카 ──
-  AG: { joined: "1985-09-01" },
-  AR: { joined: "1987-02-08" },
-  BB: { joined: "1979-06-24" },
-  BO: { joined: "2020-05-01", note: "2020년 신규 가입" },
-  BR: { joined: "2016-08-14" },
-  BS: { joined: "1977-06-23" },
-  BZ: { joined: "1993-09-16" },
-  CA: { joined: "1988-01-10" },
-  CL: { joined: "1981-04-30" },
-  CO: { joined: "2000-04-30" },
-  CR: { joined: "1997-01-19" },
-  DO: { joined: "2009-02-15" },
-  EC: { joined: "1985-08-09" },
-  GD: { joined: "1994-01-01" },
-  GT: { joined: "2019-04-16" },
-  HN: { joined: "2003-08-18" },
-  KN: { joined: "1994-04-03" },
-  LC: { joined: "2002-09-01" },
-  MX: { joined: "1995-08-14" },
-  NI: { joined: "2013-10-14" },
-  PA: { joined: "1991-10-18" },
-  PE: { joined: "2010-05-31" },
-  PY: { joined: "2013-06-18" },
-  SR: { joined: "2002-10-13" },
-  SV: { joined: "1996-10-14" },
-  TT: { joined: "2001-06-24" },
-  US: { joined: "1981-10-15" },
-  UY: { joined: "1988-06-14" },
-  VC: { joined: "2002-11-06" },
-  VE: { joined: "2000-07-12" },
-
+  AG: { joined: "1981-11-01" },   // 앤티가바부다
+  AR: { joined: "1988-02-18" },   // 아르헨티나
+  BB: { joined: "1966-11-30" },   // 바베이도스
+  BO: { joined: "2018-05-07" },   // 볼리비아
+  BR: { joined: "2016-08-14" },   // 브라질
+  BS: { joined: "1973-07-10" },   // 바하마
+  BZ: { joined: "1993-04-11" },   // 벨리즈
+  CA: { joined: "2024-01-11", note: "2024.01.11. 발효" },   // 캐나다
+  CL: { joined: "2016-08-30" },   // 칠레
+  CO: { joined: "2001-01-30" },   // 콜롬비아
+  CR: { joined: "2011-12-14" },   // 코스타리카
+  DM: { joined: "1978-11-03" },   // 도미니카연방
+  DO: { joined: "2009-08-30" },   // 도미니카공화국
+  EC: { joined: "2005-04-02" },   // 에콰도르
+  GD: { joined: "2002-04-07" },   // 그레나다
+  GT: { joined: "2017-09-18" },   // 과테말라
+  GY: { joined: "2019-04-18" },   // 가이아나
+  HN: { joined: "2004-09-30" },   // 온두라스
+  JM: { joined: "2021-07-03" },   // 자메이카
+  KN: { joined: "1994-12-14" },   // 세인트키츠네비스
+  LC: { joined: "2002-07-31" },   // 세인트루시아
+  MX: { joined: "1995-08-14" },   // 멕시코
+  NI: { joined: "2013-05-14" },   // 니카라과
+  PA: { joined: "1991-08-04" },   // 파나마
+  PE: { joined: "2010-09-30" },   // 페루
+  PY: { joined: "2014-08-30" },   // 파라과이
+  SR: { joined: "1975-11-25" },   // 수리남
+  SV: { joined: "1996-05-31" },   // 엘살바도르
+  TT: { joined: "2000-07-14" },   // 트리니다드토바고
+  US: { joined: "1981-10-15" },   // 미국
+  UY: { joined: "2012-10-14" },   // 우루과이
+  VC: { joined: "1979-10-27" },   // 세인트빈센트그레나딘
+  VE: { joined: "1999-03-16" },   // 베네수엘라
   // ── 아프리카 ──
-  BW: { joined: "2000-02-10" },
-  CV: { joined: "1984-12-07" },
-  LS: { joined: "2013-08-30" },
-  LR: { joined: "1996-02-20" },
-  MA: { joined: "2016-01-19" },
-  MW: { joined: "2016-06-24" },
-  MZ: { joined: "2018-01-30" },
-  NA: { joined: "2001-01-30" },
-  RW: { joined: "2019-01-21" },
-  SN: { joined: "1994-05-30" },
-  SZ: { joined: "1979-01-01" },
-  ZA: { joined: "1995-01-27" },
+  BI: { joined: "2015-02-13" },   // 부룬디
+  BW: { joined: "1966-09-30" },   // 보츠와나
+  CV: { joined: "2010-02-13" },   // 카보베르데
+  DZ: { joined: "2026-07-09", note: "2026.07.09. 발효" },   // 알제리
+  LR: { joined: "1996-02-08" },   // 라이베리아
+  LS: { joined: "1966-10-04" },   // 레소토
+  MA: { joined: "2016-08-14" },   // 모로코
+  MW: { joined: "1967-12-02" },   // 말라위
+  NA: { joined: "2001-01-30" },   // 나미비아
+  RW: { joined: "2024-06-05", note: "2024.06.05. 발효" },   // 르완다
+  SN: { joined: "2023-03-23", note: "2023.03.23. 발효" },   // 세네갈
+  ST: { joined: "2008-09-13" },   // 상투메프린시페
+  SZ: { joined: "1968-09-06" },   // 에스와티니
+  TN: { joined: "2018-03-30" },   // 튀니지
+  ZA: { joined: "1995-04-30" },   // 남아프리카공화국
+  // ── 중국의 협약 적용 확대(EXT) 지역 ──
+  HK: { joined: null, note: "중국 홍콩특별행정구 — 자체 권한기관에서 아포스티유를 발급합니다." },
+  MO: { joined: null, note: "중국 마카오특별행정구 — 자체 권한기관에서 아포스티유를 발급합니다." },
 };
+
 
 // ── 내장 국가 데이터베이스 (외부 API 불필요) ──────────────────────────────
 // { cca2코드: { ko: 한국어명, en: 영문명, flag: 국기이모지, aliases: [추가검색어] } }
@@ -1084,6 +1131,7 @@ const COUNTRY_DB = {
   VE: { ko:"베네수엘라",   en:"Venezuela",   flag:"🇻🇪" },
   // 아프리카
   BW: { ko:"보츠와나",     en:"Botswana",    flag:"🇧🇼" },
+  DZ: { ko:"알제리",       en:"Algeria",     flag:"🇩🇿" },
   CV: { ko:"카보베르데",   en:"Cape Verde",  flag:"🇨🇻", aliases:["카보 베르데"] },
   EG: { ko:"이집트",       en:"Egypt",       flag:"🇪🇬" },
   ET: { ko:"에티오피아",   en:"Ethiopia",    flag:"🇪🇹" },
@@ -1157,13 +1205,12 @@ function ApostilleTab() {
 
     const { code: cca2, ko: nameKo, en: nameEn, flag } = found;
     const dbEntry = APOSTILLE_DB[cca2] || null;
-    const isMember = !!dbEntry;
+    const today = new Date().toISOString().split("T")[0];
+    // 가입은 되었으나 발효일이 아직 도래하지 않은 국가 → 현재는 영사확인 대상
+    const isPending = !!dbEntry && dbEntry.joined > today;
+    const isMember = !!dbEntry && !isPending;
 
-    // 중국 본토 특수 안내
-    let note = dbEntry?.note || null;
-    if (cca2 === "CN" && !isMember) {
-      note = "중국 본토는 미가입국입니다. 홍콩(HK) 또는 마카오(MO)는 별도 가입되어 있으니 해당 지역 발급 서류인지 확인하세요.";
-    }
+    const note = dbEntry?.note || null;
 
     setResult({
       country_ko: nameKo,
@@ -1171,6 +1218,7 @@ function ApostilleTab() {
       flag,
       cca2,
       is_member: isMember,
+      is_pending: isPending,
       join_date: dbEntry?.joined || null,
       note,
       search_date: new Date().toISOString().split("T")[0],
@@ -1217,7 +1265,7 @@ function ApostilleTab() {
         <p className="text-sm text-gray-400 mb-2">한국어 또는 영어 국가명을 입력하세요. 내장 데이터로 즉시 조회됩니다.</p>
         <div className="flex items-start gap-1.5 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4">
           <AlertCircle size={13} className="text-amber-500 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-amber-700">내장 데이터는 <strong>2026년 5월 기준</strong>으로 작성되었습니다. 이후 신규 가입국이 생길 수 있으므로, 최신 현황은 <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="underline font-semibold">외교부 아포스티유 홈페이지</a>에서 추가 확인하시기 바랍니다.</p>
+          <p className="text-sm text-amber-700">내장 데이터는 <strong>HCCH 현황표 2026.6.30. 갱신본(당사국 130개)</strong> 기준입니다. 이후 신규 가입국이 생길 수 있으므로, 최신 현황은 <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="underline font-semibold">외교부 아포스티유 홈페이지</a>에서 추가 확인하시기 바랍니다.</p>
         </div>
 
         <div className="flex gap-2 mb-3">
@@ -1340,17 +1388,28 @@ function ApostilleTab() {
 
 function ApostilleResult({ info }) {
   const ok = info.is_member;
+  const pending = info.is_pending;
+  const boxCls   = ok ? "bg-emerald-50 border-emerald-300"
+                 : pending ? "bg-blue-50 border-blue-300"
+                 : "bg-amber-50 border-amber-300";
+  const titleCls = ok ? "text-emerald-800" : pending ? "text-blue-800" : "text-amber-800";
+  const badgeCls = ok ? "bg-emerald-100 text-emerald-800"
+                 : pending ? "bg-blue-100 text-blue-800"
+                 : "bg-amber-100 text-amber-800";
+  const badgeTxt = ok ? "✅ 아포스티유 협약 가입국"
+                 : pending ? `🕒 가입 완료 — ${info.join_date}부터 발효 (현재는 영사확인)`
+                 : "❌ 아포스티유 협약 미가입국";
   return (
-    <div className={`rounded-xl border p-4 sm:p-5 mt-3 ${ok ? "bg-emerald-50 border-emerald-300" : "bg-amber-50 border-amber-300"}`}>
+    <div className={`rounded-xl border p-4 sm:p-5 mt-3 ${boxCls}`}>
       {/* 헤더 */}
       <div className="flex items-center gap-3 mb-3">
         {ok
           ? <CheckCircle2 size={28} className="text-emerald-500 flex-shrink-0" />
-          : <XCircle     size={28} className="text-amber-500 flex-shrink-0" />}
+          : <XCircle     size={28} className={`flex-shrink-0 ${pending ? "text-blue-500" : "text-amber-500"}`} />}
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             {info.flag && <span className="text-2xl leading-none">{info.flag}</span>}
-            <h4 className={`text-lg sm:text-xl font-black ${ok ? "text-emerald-800" : "text-amber-800"}`}>
+            <h4 className={`text-lg sm:text-xl font-black ${titleCls}`}>
               {info.country_ko || "—"}
             </h4>
             {info.country_en && (
@@ -1360,8 +1419,8 @@ function ApostilleResult({ info }) {
               <span className="text-[12px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-mono">{info.cca2}</span>
             )}
           </div>
-          <span className={`inline-block mt-1 px-2.5 py-0.5 rounded-full text-sm sm:text-sm font-bold ${ok ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
-            {ok ? "✅ 아포스티유 협약 가입국" : "❌ 아포스티유 협약 미가입국"}
+          <span className={`inline-block mt-1 px-2.5 py-0.5 rounded-full text-sm sm:text-sm font-bold ${badgeCls}`}>
+            {badgeTxt}
           </span>
         </div>
       </div>
@@ -1369,7 +1428,7 @@ function ApostilleResult({ info }) {
       {/* 상세 정보 */}
       {(info.join_date || info.search_date) && (
         <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-gray-600 mb-3">
-          {info.join_date && <span><strong>협약 가입일:</strong> {info.join_date}</span>}
+          {info.join_date && <span><strong>{info.is_pending ? "발효 예정일" : "협약 발효일"}:</strong> {info.join_date}</span>}
           {info.search_date && <span className="text-gray-400">조회일: {info.search_date}</span>}
         </div>
       )}
