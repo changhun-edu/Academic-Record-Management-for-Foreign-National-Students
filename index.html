@@ -32,10 +32,32 @@
   <script type="text/babel" data-presets="react,env">
     const { useState, useEffect, useCallback } = React;
 
-    // ── 인라인 SVG 아이콘 (lucide 대체) ──────────────────
-    const Ic = ({ size=16, className="", children }) => (
+    /* ──────────────────────────────────────────────────────────────
+     * 아이콘: Lucide (https://lucide.dev) — ISC License
+     *
+     * ISC License
+     *
+     * Copyright (c) for portions of Lucide are held by Cole Bemis
+     * 2013-2022 as part of Feather (MIT). All other copyright (c) for
+     * Lucide are held by Lucide Contributors 2022.
+     *
+     * Permission to use, copy, modify, and/or distribute this software
+     * for any purpose with or without fee is hereby granted, provided
+     * that the above copyright notice and this permission notice appear
+     * in all copies.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+     * WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+     * WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+     * AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+     * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+     * LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+     * NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+     * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+     * ────────────────────────────────────────────────────────────── */
+    const Ic = ({ size=16, className="", strokeWidth=2, children }) => (
       <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+        stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round"
         strokeLinejoin="round" className={className} style={{display:"inline-block",flexShrink:0}}>
         {children}
       </svg>
@@ -61,6 +83,16 @@
     const ChevronDown = p => <Ic {...p}><polyline points="6 9 12 15 18 9"/></Ic>;
     const ChevronUp = p => <Ic {...p}><polyline points="18 15 12 9 6 15"/></Ic>;
     const Tag = p => <Ic {...p}><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></Ic>;
+    const Lightbulb = p => <Ic {...p}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></Ic>;
+    const Pin = p => <Ic {...p}><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></Ic>;
+    const BarChart3 = p => <Ic {...p}><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></Ic>;
+    const ClipboardList = p => <Ic {...p}><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></Ic>;
+    const Clock = p => <Ic {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></Ic>;
+    const AlertTriangle = p => <Ic {...p}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></Ic>;
+    const Zap = p => <Ic {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Ic>;
+    const Scale = p => <Ic {...p}><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></Ic>;
+    const X = p => <Ic {...p}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></Ic>;
+    const Check = p => <Ic {...p}><polyline points="20 6 9 17 4 12"/></Ic>;
 
 
 // ── 데이터 ────────────────────────────────────────────
@@ -100,8 +132,112 @@ const TABS = [
   { id: "qna",        label: "자주 묻는 질문(Q&A)",   Icon: HelpCircle },
 ];
 
+// ╔══════════════════════════════════════════════════════╗
+// ║  출처 및 라이선스 고지 (버튼 → 모달)                 ║
+// ╚══════════════════════════════════════════════════════╝
+// ※ 아래 '내용 출처'의 자료명·발행연도·공공누리 유형은 실제 참고한
+//   원자료의 표지·판권면을 확인하여 정확히 채워 넣으세요.
+const NOTICE_SECTIONS = [
+  {
+    title: "내용 출처",
+    items: [
+      "교육부, 「다문화학생 교육 지원 업무 매뉴얼」(발행연도) — 공공누리 제○유형",
+      "교육부, 「학교생활기록부 기재요령(초등학교)」(발행연도) — 공공누리 제○유형",
+      "○○광역시교육청, 「중도입국·외국인 학생 학적 업무 처리 지침」(발행연도)",
+      "헤이그국제사법회의(HCCH) 아포스티유 협약 가입국 현황표 (2026. 6. 30. 기준) — 자체 정리",
+    ],
+    note: "본 사이트의 Q&A·나이스 안내·학년 배정 기준은 위 자료를 학교 현장에서 쓰기 쉽도록 재구성한 것입니다. 원문과 다를 수 있으므로 최종 처리는 반드시 원자료와 관할 교육청 지침을 확인하세요.",
+  },
+  {
+    title: "글꼴 · 아이콘 · 라이브러리",
+    items: [
+      "글꼴: Noto Sans KR — SIL Open Font License 1.1",
+      "아이콘: Lucide (lucide.dev) — ISC License, Copyright (c) Lucide Contributors. 일부는 Feather(Cole Bemis, MIT)에서 유래",
+      "라이브러리: React · ReactDOM · Babel · Tailwind CSS — MIT License",
+    ],
+    note: "이 사이트는 색상 이모지를 사용하지 않습니다. 모든 그림 기호는 위 Lucide 아이콘을 인라인 SVG로 포함한 것입니다.",
+  },
+  {
+    title: "이용 안내",
+    items: [
+      "본 사이트는 학교 담당자의 업무 참고용이며 법적 효력이 없습니다.",
+      "입력한 내용은 서버로 전송되지 않으며, 브라우저 안에서만 계산됩니다.",
+      "제도·법령은 수시로 바뀝니다. 시행일과 최신 지침을 반드시 확인하세요.",
+    ],
+  },
+];
+
+function NoticeModal({ onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+         role="dialog" aria-modal="true" aria-label="출처 및 라이선스">
+      <div className="absolute inset-0 bg-black/55" onClick={onClose} />
+      <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
+
+        {/* 모달 헤더 */}
+        <div className="flex items-center gap-2.5 px-5 sm:px-6 py-4 border-b border-gray-200 flex-shrink-0">
+          <Scale size={19} className="text-blue-700 flex-shrink-0" />
+          <h3 className="text-base font-bold text-gray-800 flex-1">출처 및 라이선스</h3>
+          <button onClick={onClose} aria-label="닫기"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* 모달 본문 */}
+        <div className="overflow-y-auto px-5 sm:px-6 py-5 space-y-5">
+          {NOTICE_SECTIONS.map((sec) => (
+            <div key={sec.title}>
+              <h4 className="text-sm font-bold text-gray-700 mb-2 flex items-center gap-1.5">
+                <span className="w-1 h-3.5 bg-blue-600 rounded-full inline-block" />
+                {sec.title}
+              </h4>
+              <ul className="space-y-1.5">
+                {sec.items.map((it, i) => (
+                  <li key={i} className="flex gap-2 text-sm text-gray-600 leading-relaxed">
+                    <span className="text-gray-300 flex-shrink-0 mt-0.5">•</span>
+                    <span>{it}</span>
+                  </li>
+                ))}
+              </ul>
+              {sec.note && (
+                <p className="mt-2 text-[13px] text-gray-500 bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 leading-relaxed">
+                  {sec.note}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* 모달 푸터 */}
+        <div className="px-5 sm:px-6 py-3.5 border-t border-gray-200 flex-shrink-0 flex items-center justify-between gap-3 flex-wrap">
+          <p className="text-[13px] text-gray-500">
+            &copy; 2026 최창훈 — 사이트 구성 · 디자인 · 코드
+          </p>
+          <button onClick={onClose}
+            className="text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 px-4 py-1.5 rounded-lg transition-colors">
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── 사이드바 컴포넌트 (App 외부 정의 — 내부 정의 시 매 렌더마다 리마운트됨) ──
 function Sidebar({ mobile, activeTab, onNavigate }) {
+  const [noticeOpen, setNoticeOpen] = useState(false);
   return (
     <aside className={`${mobile ? "w-72" : "w-60"} text-white flex flex-col justify-between h-full`} style={{background:"#1e2d5a"}}>
       <div className="p-5 overflow-y-auto">
@@ -122,10 +258,17 @@ function Sidebar({ mobile, activeTab, onNavigate }) {
           ))}
         </nav>
       </div>
-      <div className="p-4 text-center flex-shrink-0" style={{borderTop:"1px solid rgba(255,255,255,0.08)"}}>
-        <p className="text-[12px]" style={{color:"rgba(255,255,255,0.35)"}}>교육부·17개 시도교육청 자료 기반</p>
-        <p className="text-[13px] mt-0.5 select-none" style={{color:"rgba(255,255,255,0.15)"}}>만든이 2026 최창훈</p>
+      <div className="p-4 flex-shrink-0" style={{borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+        <button
+          onClick={() => setNoticeOpen(true)}
+          className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[12px] font-medium transition-colors hover:bg-white/10"
+          style={{color:"rgba(255,255,255,0.55)"}}>
+          <Scale size={13} className="flex-shrink-0 opacity-80" />
+          <span>출처 및 라이선스</span>
+        </button>
+        <p className="text-[13px] mt-1.5 text-center select-none" style={{color:"rgba(255,255,255,0.15)"}}>만든이 2026 최창훈</p>
       </div>
+      {noticeOpen && <NoticeModal onClose={() => setNoticeOpen(false)} />}
     </aside>
   );
 }
@@ -451,7 +594,7 @@ function ChecklistTab() {
   return (
     <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
-        <h3 className="text-sm sm:text-base font-bold text-gray-800">💡 학생 신분별 제출 서류 확인</h3>
+        <h3 className="text-sm sm:text-base font-bold text-gray-800 flex items-center gap-1.5"><Lightbulb size={16} className="text-amber-500 flex-shrink-0" />학생 신분별 제출 서류 확인</h3>
         <select value={type} onChange={e => setType(e.target.value)}
           className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 outline-none w-full sm:w-auto">
           <option value="general">일반 외국인 등록 아동</option>
@@ -472,7 +615,7 @@ function ChecklistTab() {
               ${checked[i] ? "bg-green-50 border-green-300" : "bg-gray-50 border-gray-200 hover:bg-gray-100"}`}>
             <div className={`w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5 mr-3 flex-shrink-0 transition-all
               ${checked[i] ? "bg-green-500 border-green-500" : "border-gray-300"}`}>
-              {checked[i] && <span className="text-white text-sm font-bold">✓</span>}
+              {checked[i] && <Check size={13} strokeWidth={3.5} className="text-white" />}
             </div>
             <div>
               <p className={`font-semibold text-sm ${checked[i] ? "text-green-800 line-through" : "text-gray-800"}`}>{item.name}</p>
@@ -482,8 +625,8 @@ function ChecklistTab() {
         ))}
       </div>
       {doneCount === items.length && (
-        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800 font-semibold text-center">
-          ✅ 모든 서류 확인 완료!
+        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800 font-semibold flex items-center justify-center gap-1.5">
+          <CheckCircle2 size={16} className="text-green-600 flex-shrink-0" />모든 서류 확인 완료!
         </div>
       )}
     </div>
@@ -614,8 +757,8 @@ function CalculatorTab() {
           className={`p-4 rounded-xl border-2 text-left transition-all ${mode === "doc"
             ? "border-indigo-500 bg-indigo-50"
             : "border-gray-200 bg-white hover:border-gray-300"}`}>
-          <div className={`text-sm font-bold mb-1 ${mode === "doc" ? "text-indigo-800" : "text-gray-700"}`}>
-            📄 학력증빙서류가 있는 경우
+          <div className={`text-sm font-bold mb-1 flex items-center gap-1.5 ${mode === "doc" ? "text-indigo-800" : "text-gray-700"}`}>
+            <FileText size={15} className="flex-shrink-0 opacity-70" />학력증빙서류가 있는 경우
           </div>
           <p className="text-sm text-gray-500">재학증명서·성적증명서로 외국 학제 기반 학년 산정</p>
         </button>
@@ -623,8 +766,8 @@ function CalculatorTab() {
           className={`p-4 rounded-xl border-2 text-left transition-all ${mode === "nodoc"
             ? "border-orange-500 bg-orange-50"
             : "border-gray-200 bg-white hover:border-gray-300"}`}>
-          <div className={`text-sm font-bold mb-1 ${mode === "nodoc" ? "text-orange-800" : "text-gray-700"}`}>
-            ❓ 학력 증명이 곤란한 경우
+          <div className={`text-sm font-bold mb-1 flex items-center gap-1.5 ${mode === "nodoc" ? "text-orange-800" : "text-gray-700"}`}>
+            <HelpCircle size={15} className="flex-shrink-0 opacity-70" />학력 증명이 곤란한 경우
           </div>
           <p className="text-sm text-gray-500">시도교육청 학력심의위원회 통한 학력 인정 및 학년 결정</p>
         </button>
@@ -646,7 +789,7 @@ function CalculatorTab() {
               <p className="text-orange-700">학력증빙서류 없이도 학력인정이 가능한 학교의 경우 해당 학교 학력 심의를 통해 학력 인정 및 학년 결정</p>
             </div>
             <div className="bg-amber-100 rounded-lg p-3 border border-amber-300 mt-1">
-              <p className="font-semibold text-amber-800">📌 유의사항</p>
+              <p className="font-semibold text-amber-800 flex items-center gap-1.5"><Pin size={14} className="flex-shrink-0" />유의사항</p>
               <p className="text-amber-700 mt-0.5">사이버학습, 가정 내 학습 기간 중 국내에서 1개월 이상 거주하거나 해당 기간의 성적을 증명할 수 없는 경우에는 외국 학교 교육기간으로 인정하지 않습니다.</p>
             </div>
           </div>
@@ -660,7 +803,7 @@ function CalculatorTab() {
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <button onClick={() => setShowTable(t => !t)}
               className="w-full flex justify-between items-center px-5 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-              <span>📊 외국학제 → 한국학제 환산표</span>
+              <span className="flex items-center gap-1.5"><BarChart3 size={15} className="text-gray-400 flex-shrink-0" />외국학제 → 한국학제 환산표</span>
               <span className="text-gray-400 text-sm">{showTable ? "▲ 접기" : "▼ 펼쳐보기"}</span>
             </button>
             {showTable && (
@@ -786,7 +929,7 @@ function CalculatorTab() {
                     {/* 1학기 부족 허용 안내 */}
                     {result.shortOneSem && result.flexApplicable && (
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-2.5 text-sm text-blue-800">
-                        <p className="font-semibold">📌 이수 학기가 홀수 — 1학기(6개월) 부족</p>
+                        <p className="font-semibold flex items-center gap-1.5"><Pin size={14} className="flex-shrink-0" />이수 학기가 홀수 — 1학기(6개월) 부족</p>
                         <p className="mt-0.5">해당 학년을 마치는 데 한 학기가 부족한 상태입니다. 외국학교에서 국내 학교로 <strong>공백 없이 연속 취학</strong>하는 경우 학교장 판단에 따라 상위 학년 배정이 가능합니다.</p>
                       </div>
                     )}
@@ -794,7 +937,7 @@ function CalculatorTab() {
                     {/* 졸업학력 인정 조건 */}
                     {result.info.school === "고등학교 졸업 이상" && (
                       <div className="bg-green-50 border border-green-200 rounded-lg p-2.5 text-sm text-green-800">
-                        <p className="font-semibold">🎓 졸업학력 인정 가능</p>
+                        <p className="font-semibold flex items-center gap-1.5"><GraduationCap size={15} className="flex-shrink-0" />졸업학력 인정 가능</p>
                         <p className="mt-0.5">외국 정규교육기관에서 총 재학기간을 만족하며 수료·졸업한 경우 졸업학력으로 인정합니다.</p>
                       </div>
                     )}
@@ -806,7 +949,7 @@ function CalculatorTab() {
 
           {/* 인정 기준 요약 */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-            <h4 className="text-sm font-bold text-gray-700 mb-3">📌 외국 학교교육과정 인정 기준</h4>
+            <h4 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1.5"><Pin size={14} className="text-gray-400 flex-shrink-0" />외국 학교교육과정 인정 기준</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm mb-3">
               {[
                 { school: "초등학교 과정", range: "외국학교 1~6학년 과정", box: "bg-indigo-50 border-indigo-200", title: "text-indigo-800", text: "text-indigo-600" },
@@ -985,176 +1128,179 @@ const APOSTILLE_DB = {
 
 
 // ── 내장 국가 데이터베이스 (외부 API 불필요) ──────────────────────────────
-// { cca2코드: { ko: 한국어명, en: 영문명, flag: 국기이모지, aliases: [추가검색어] } }
+// { cca2코드: { ko: 한국어명, en: 영문명, aliases: [추가검색어] } }
+// ※ 국기 이모지는 사용하지 않는다. 이모지 글꼴(Apple/Microsoft 등)의 그림은
+//    각 제작사의 저작물이므로, 화면을 캡처해 배포·출판할 때 문제가 될 수 있다.
+//    대신 ISO 3166-1 alpha-2 국가코드를 배지로 표시한다.
 const COUNTRY_DB = {
   // 아시아·대양주
-  AF: { ko:"아프가니스탄", en:"Afghanistan", flag:"🇦🇫" },
-  AU: { ko:"호주",         en:"Australia",   flag:"🇦🇺", aliases:["오스트레일리아"] },
-  BD: { ko:"방글라데시",   en:"Bangladesh",  flag:"🇧🇩" },
-  BN: { ko:"브루나이",     en:"Brunei",      flag:"🇧🇳" },
-  CK: { ko:"쿡 제도",     en:"Cook Islands",flag:"🇨🇰" },
-  CN: { ko:"중국",         en:"China",       flag:"🇨🇳" },
-  FJ: { ko:"피지",         en:"Fiji",        flag:"🇫🇯" },
-  HK: { ko:"홍콩",         en:"Hong Kong",   flag:"🇭🇰" },
-  ID: { ko:"인도네시아",   en:"Indonesia",   flag:"🇮🇩" },
-  IL: { ko:"이스라엘",     en:"Israel",      flag:"🇮🇱" },
-  IN: { ko:"인도",         en:"India",       flag:"🇮🇳" },
-  JP: { ko:"일본",         en:"Japan",       flag:"🇯🇵" },
-  KG: { ko:"키르기스스탄", en:"Kyrgyzstan",  flag:"🇰🇬", aliases:["키르기즈스탄"] },
-  KH: { ko:"캄보디아",     en:"Cambodia",    flag:"🇰🇭" },
-  KR: { ko:"대한민국",     en:"South Korea", flag:"🇰🇷", aliases:["한국"] },
-  KZ: { ko:"카자흐스탄",   en:"Kazakhstan",  flag:"🇰🇿" },
-  LA: { ko:"라오스",       en:"Laos",        flag:"🇱🇦" },
-  LK: { ko:"스리랑카",     en:"Sri Lanka",   flag:"🇱🇰" },
-  MH: { ko:"마샬 제도",   en:"Marshall Islands", flag:"🇲🇭" },
-  MM: { ko:"미얀마",       en:"Myanmar",     flag:"🇲🇲", aliases:["버마"] },
-  MN: { ko:"몽골",         en:"Mongolia",    flag:"🇲🇳" },
-  MO: { ko:"마카오",       en:"Macao",       flag:"🇲🇴", aliases:["마카우"] },
-  MU: { ko:"모리셔스",     en:"Mauritius",   flag:"🇲🇺" },
-  MV: { ko:"몰디브",       en:"Maldives",    flag:"🇲🇻" },
-  MY: { ko:"말레이시아",   en:"Malaysia",    flag:"🇲🇾" },
-  NP: { ko:"네팔",         en:"Nepal",       flag:"🇳🇵" },
-  NR: { ko:"나우루",       en:"Nauru",       flag:"🇳🇷" },
-  NU: { ko:"니우에",       en:"Niue",        flag:"🇳🇺" },
-  NZ: { ko:"뉴질랜드",     en:"New Zealand", flag:"🇳🇿" },
-  PH: { ko:"필리핀",       en:"Philippines", flag:"🇵🇭" },
-  PK: { ko:"파키스탄",     en:"Pakistan",    flag:"🇵🇰" },
-  PW: { ko:"팔라우",       en:"Palau",       flag:"🇵🇼" },
-  SC: { ko:"세이셸",       en:"Seychelles",  flag:"🇸🇨" },
-  SG: { ko:"싱가포르",     en:"Singapore",   flag:"🇸🇬" },
-  TH: { ko:"태국",         en:"Thailand",    flag:"🇹🇭" },
-  TJ: { ko:"타지키스탄",   en:"Tajikistan",  flag:"🇹🇯" },
-  TL: { ko:"동티모르",     en:"East Timor",  flag:"🇹🇱" },
-  TM: { ko:"투르크메니스탄", en:"Turkmenistan", flag:"🇹🇲" },
-  TO: { ko:"통가",         en:"Tonga",       flag:"🇹🇴" },
-  TW: { ko:"대만",         en:"Taiwan",      flag:"🇹🇼" },
-  UZ: { ko:"우즈베키스탄", en:"Uzbekistan",  flag:"🇺🇿" },
-  VN: { ko:"베트남",       en:"Vietnam",     flag:"🇻🇳" },
-  VU: { ko:"바누아투",     en:"Vanuatu",     flag:"🇻🇺" },
-  WS: { ko:"사모아",       en:"Samoa",       flag:"🇼🇸" },
+  AF: { ko:"아프가니스탄", en:"Afghanistan" },
+  AU: { ko:"호주",         en:"Australia", aliases:["오스트레일리아"] },
+  BD: { ko:"방글라데시",   en:"Bangladesh" },
+  BN: { ko:"브루나이",     en:"Brunei" },
+  CK: { ko:"쿡 제도",     en:"Cook Islands" },
+  CN: { ko:"중국",         en:"China" },
+  FJ: { ko:"피지",         en:"Fiji" },
+  HK: { ko:"홍콩",         en:"Hong Kong" },
+  ID: { ko:"인도네시아",   en:"Indonesia" },
+  IL: { ko:"이스라엘",     en:"Israel" },
+  IN: { ko:"인도",         en:"India" },
+  JP: { ko:"일본",         en:"Japan" },
+  KG: { ko:"키르기스스탄", en:"Kyrgyzstan", aliases:["키르기즈스탄"] },
+  KH: { ko:"캄보디아",     en:"Cambodia" },
+  KR: { ko:"대한민국",     en:"South Korea", aliases:["한국"] },
+  KZ: { ko:"카자흐스탄",   en:"Kazakhstan" },
+  LA: { ko:"라오스",       en:"Laos" },
+  LK: { ko:"스리랑카",     en:"Sri Lanka" },
+  MH: { ko:"마샬 제도",   en:"Marshall Islands" },
+  MM: { ko:"미얀마",       en:"Myanmar", aliases:["버마"] },
+  MN: { ko:"몽골",         en:"Mongolia" },
+  MO: { ko:"마카오",       en:"Macao", aliases:["마카우"] },
+  MU: { ko:"모리셔스",     en:"Mauritius" },
+  MV: { ko:"몰디브",       en:"Maldives" },
+  MY: { ko:"말레이시아",   en:"Malaysia" },
+  NP: { ko:"네팔",         en:"Nepal" },
+  NR: { ko:"나우루",       en:"Nauru" },
+  NU: { ko:"니우에",       en:"Niue" },
+  NZ: { ko:"뉴질랜드",     en:"New Zealand" },
+  PH: { ko:"필리핀",       en:"Philippines" },
+  PK: { ko:"파키스탄",     en:"Pakistan" },
+  PW: { ko:"팔라우",       en:"Palau" },
+  SC: { ko:"세이셸",       en:"Seychelles" },
+  SG: { ko:"싱가포르",     en:"Singapore" },
+  TH: { ko:"태국",         en:"Thailand" },
+  TJ: { ko:"타지키스탄",   en:"Tajikistan" },
+  TL: { ko:"동티모르",     en:"East Timor" },
+  TM: { ko:"투르크메니스탄", en:"Turkmenistan" },
+  TO: { ko:"통가",         en:"Tonga" },
+  TW: { ko:"대만",         en:"Taiwan" },
+  UZ: { ko:"우즈베키스탄", en:"Uzbekistan" },
+  VN: { ko:"베트남",       en:"Vietnam" },
+  VU: { ko:"바누아투",     en:"Vanuatu" },
+  WS: { ko:"사모아",       en:"Samoa" },
   // 중동
-  AE: { ko:"아랍에미리트", en:"UAE",         flag:"🇦🇪", aliases:["UAE","두바이"] },
-  AM: { ko:"아르메니아",   en:"Armenia",     flag:"🇦🇲" },
-  AZ: { ko:"아제르바이잔", en:"Azerbaijan",  flag:"🇦🇿" },
-  BH: { ko:"바레인",       en:"Bahrain",     flag:"🇧🇭" },
-  GE: { ko:"조지아",       en:"Georgia",     flag:"🇬🇪", aliases:["그루지야"] },
-  IQ: { ko:"이라크",       en:"Iraq",        flag:"🇮🇶" },
-  IR: { ko:"이란",         en:"Iran",        flag:"🇮🇷" },
-  JO: { ko:"요르단",       en:"Jordan",      flag:"🇯🇴" },
-  KW: { ko:"쿠웨이트",     en:"Kuwait",      flag:"🇰🇼" },
-  LB: { ko:"레바논",       en:"Lebanon",     flag:"🇱🇧" },
-  OM: { ko:"오만",         en:"Oman",        flag:"🇴🇲" },
-  QA: { ko:"카타르",       en:"Qatar",       flag:"🇶🇦" },
-  SA: { ko:"사우디아라비아", en:"Saudi Arabia", flag:"🇸🇦", aliases:["사우디"] },
-  TR: { ko:"튀르키예",     en:"Turkey",      flag:"🇹🇷", aliases:["터키"] },
+  AE: { ko:"아랍에미리트", en:"UAE", aliases:["UAE","두바이"] },
+  AM: { ko:"아르메니아",   en:"Armenia" },
+  AZ: { ko:"아제르바이잔", en:"Azerbaijan" },
+  BH: { ko:"바레인",       en:"Bahrain" },
+  GE: { ko:"조지아",       en:"Georgia", aliases:["그루지야"] },
+  IQ: { ko:"이라크",       en:"Iraq" },
+  IR: { ko:"이란",         en:"Iran" },
+  JO: { ko:"요르단",       en:"Jordan" },
+  KW: { ko:"쿠웨이트",     en:"Kuwait" },
+  LB: { ko:"레바논",       en:"Lebanon" },
+  OM: { ko:"오만",         en:"Oman" },
+  QA: { ko:"카타르",       en:"Qatar" },
+  SA: { ko:"사우디아라비아", en:"Saudi Arabia", aliases:["사우디"] },
+  TR: { ko:"튀르키예",     en:"Turkey", aliases:["터키"] },
   // 유럽
-  AD: { ko:"안도라",       en:"Andorra",     flag:"🇦🇩" },
-  AL: { ko:"알바니아",     en:"Albania",     flag:"🇦🇱" },
-  AT: { ko:"오스트리아",   en:"Austria",     flag:"🇦🇹" },
-  BA: { ko:"보스니아헤르체고비나", en:"Bosnia and Herzegovina", flag:"🇧🇦", aliases:["보스니아"] },
-  BE: { ko:"벨기에",       en:"Belgium",     flag:"🇧🇪" },
-  BG: { ko:"불가리아",     en:"Bulgaria",    flag:"🇧🇬" },
-  BY: { ko:"벨라루스",     en:"Belarus",     flag:"🇧🇾" },
-  CH: { ko:"스위스",       en:"Switzerland", flag:"🇨🇭" },
-  CY: { ko:"키프로스",     en:"Cyprus",      flag:"🇨🇾" },
-  CZ: { ko:"체코",         en:"Czech Republic", flag:"🇨🇿", aliases:["체코 공화국"] },
-  DE: { ko:"독일",         en:"Germany",     flag:"🇩🇪" },
-  DK: { ko:"덴마크",       en:"Denmark",     flag:"🇩🇰" },
-  EE: { ko:"에스토니아",   en:"Estonia",     flag:"🇪🇪" },
-  ES: { ko:"스페인",       en:"Spain",       flag:"🇪🇸" },
-  FI: { ko:"핀란드",       en:"Finland",     flag:"🇫🇮" },
-  FR: { ko:"프랑스",       en:"France",      flag:"🇫🇷" },
-  GB: { ko:"영국",         en:"United Kingdom", flag:"🇬🇧", aliases:["UK","United Kingdom"] },
-  GR: { ko:"그리스",       en:"Greece",      flag:"🇬🇷" },
-  HR: { ko:"크로아티아",   en:"Croatia",     flag:"🇭🇷" },
-  HU: { ko:"헝가리",       en:"Hungary",     flag:"🇭🇺" },
-  IE: { ko:"아일랜드",     en:"Ireland",     flag:"🇮🇪" },
-  IS: { ko:"아이슬란드",   en:"Iceland",     flag:"🇮🇸" },
-  IT: { ko:"이탈리아",     en:"Italy",       flag:"🇮🇹" },
-  LI: { ko:"리히텐슈타인", en:"Liechtenstein", flag:"🇱🇮" },
-  LT: { ko:"리투아니아",   en:"Lithuania",   flag:"🇱🇹" },
-  LU: { ko:"룩셈부르크",   en:"Luxembourg",  flag:"🇱🇺" },
-  LV: { ko:"라트비아",     en:"Latvia",      flag:"🇱🇻" },
-  MC: { ko:"모나코",       en:"Monaco",      flag:"🇲🇨" },
-  MD: { ko:"몰도바",       en:"Moldova",     flag:"🇲🇩" },
-  ME: { ko:"몬테네그로",   en:"Montenegro",  flag:"🇲🇪" },
-  MK: { ko:"북마케도니아", en:"North Macedonia", flag:"🇲🇰", aliases:["마케도니아"] },
-  MT: { ko:"몰타",         en:"Malta",       flag:"🇲🇹" },
-  NL: { ko:"네덜란드",     en:"Netherlands", flag:"🇳🇱", aliases:["화란"] },
-  NO: { ko:"노르웨이",     en:"Norway",      flag:"🇳🇴" },
-  PL: { ko:"폴란드",       en:"Poland",      flag:"🇵🇱" },
-  PT: { ko:"포르투갈",     en:"Portugal",    flag:"🇵🇹" },
-  RO: { ko:"루마니아",     en:"Romania",     flag:"🇷🇴" },
-  RS: { ko:"세르비아",     en:"Serbia",      flag:"🇷🇸" },
-  RU: { ko:"러시아",       en:"Russia",      flag:"🇷🇺" },
-  SE: { ko:"스웨덴",       en:"Sweden",      flag:"🇸🇪" },
-  SI: { ko:"슬로베니아",   en:"Slovenia",    flag:"🇸🇮" },
-  SK: { ko:"슬로바키아",   en:"Slovakia",    flag:"🇸🇰" },
-  SM: { ko:"산마리노",     en:"San Marino",  flag:"🇸🇲" },
-  UA: { ko:"우크라이나",   en:"Ukraine",     flag:"🇺🇦" },
-  XK: { ko:"코소보",         en:"Kosovo",      flag:"🇽🇰" },
+  AD: { ko:"안도라",       en:"Andorra" },
+  AL: { ko:"알바니아",     en:"Albania" },
+  AT: { ko:"오스트리아",   en:"Austria" },
+  BA: { ko:"보스니아헤르체고비나", en:"Bosnia and Herzegovina", aliases:["보스니아"] },
+  BE: { ko:"벨기에",       en:"Belgium" },
+  BG: { ko:"불가리아",     en:"Bulgaria" },
+  BY: { ko:"벨라루스",     en:"Belarus" },
+  CH: { ko:"스위스",       en:"Switzerland" },
+  CY: { ko:"키프로스",     en:"Cyprus" },
+  CZ: { ko:"체코",         en:"Czech Republic", aliases:["체코 공화국"] },
+  DE: { ko:"독일",         en:"Germany" },
+  DK: { ko:"덴마크",       en:"Denmark" },
+  EE: { ko:"에스토니아",   en:"Estonia" },
+  ES: { ko:"스페인",       en:"Spain" },
+  FI: { ko:"핀란드",       en:"Finland" },
+  FR: { ko:"프랑스",       en:"France" },
+  GB: { ko:"영국",         en:"United Kingdom", aliases:["UK","United Kingdom"] },
+  GR: { ko:"그리스",       en:"Greece" },
+  HR: { ko:"크로아티아",   en:"Croatia" },
+  HU: { ko:"헝가리",       en:"Hungary" },
+  IE: { ko:"아일랜드",     en:"Ireland" },
+  IS: { ko:"아이슬란드",   en:"Iceland" },
+  IT: { ko:"이탈리아",     en:"Italy" },
+  LI: { ko:"리히텐슈타인", en:"Liechtenstein" },
+  LT: { ko:"리투아니아",   en:"Lithuania" },
+  LU: { ko:"룩셈부르크",   en:"Luxembourg" },
+  LV: { ko:"라트비아",     en:"Latvia" },
+  MC: { ko:"모나코",       en:"Monaco" },
+  MD: { ko:"몰도바",       en:"Moldova" },
+  ME: { ko:"몬테네그로",   en:"Montenegro" },
+  MK: { ko:"북마케도니아", en:"North Macedonia", aliases:["마케도니아"] },
+  MT: { ko:"몰타",         en:"Malta" },
+  NL: { ko:"네덜란드",     en:"Netherlands", aliases:["화란"] },
+  NO: { ko:"노르웨이",     en:"Norway" },
+  PL: { ko:"폴란드",       en:"Poland" },
+  PT: { ko:"포르투갈",     en:"Portugal" },
+  RO: { ko:"루마니아",     en:"Romania" },
+  RS: { ko:"세르비아",     en:"Serbia" },
+  RU: { ko:"러시아",       en:"Russia" },
+  SE: { ko:"스웨덴",       en:"Sweden" },
+  SI: { ko:"슬로베니아",   en:"Slovenia" },
+  SK: { ko:"슬로바키아",   en:"Slovakia" },
+  SM: { ko:"산마리노",     en:"San Marino" },
+  UA: { ko:"우크라이나",   en:"Ukraine" },
+  XK: { ko:"코소보",         en:"Kosovo" },
   // 아메리카
-  AG: { ko:"앤티가 바부다", en:"Antigua and Barbuda", flag:"🇦🇬" },
-  AR: { ko:"아르헨티나",   en:"Argentina",   flag:"🇦🇷" },
-  BB: { ko:"바베이도스",   en:"Barbados",    flag:"🇧🇧" },
-  BO: { ko:"볼리비아",     en:"Bolivia",     flag:"🇧🇴" },
-  BR: { ko:"브라질",       en:"Brazil",      flag:"🇧🇷" },
-  BS: { ko:"바하마",       en:"Bahamas",     flag:"🇧🇸" },
-  BZ: { ko:"벨리즈",       en:"Belize",      flag:"🇧🇿" },
-  CA: { ko:"캐나다",       en:"Canada",      flag:"🇨🇦" },
-  CL: { ko:"칠레",         en:"Chile",       flag:"🇨🇱" },
-  CO: { ko:"콜롬비아",     en:"Colombia",    flag:"🇨🇴" },
-  CR: { ko:"코스타리카",   en:"Costa Rica",  flag:"🇨🇷" },
-  CU: { ko:"쿠바",         en:"Cuba",        flag:"🇨🇺" },
-  DO: { ko:"도미니카 공화국", en:"Dominican Republic", flag:"🇩🇴", aliases:["도미니카공화국"] },
-  EC: { ko:"에콰도르",     en:"Ecuador",     flag:"🇪🇨" },
-  DM: { ko:"도미니카연방", en:"Dominica",    flag:"🇩🇲", aliases:["도미니카"] },
-  GD: { ko:"그레나다",     en:"Grenada",     flag:"🇬🇩" },
-  GY: { ko:"가이아나",     en:"Guyana",      flag:"🇬🇾" },
-  GT: { ko:"과테말라",     en:"Guatemala",   flag:"🇬🇹" },
-  HN: { ko:"온두라스",     en:"Honduras",    flag:"🇭🇳" },
-  HT: { ko:"아이티",       en:"Haiti",       flag:"🇭🇹" },
-  JM: { ko:"자메이카",     en:"Jamaica",     flag:"🇯🇲" },
-  KN: { ko:"세인트키츠 네비스", en:"Saint Kitts and Nevis", flag:"🇰🇳" },
-  LC: { ko:"세인트루시아", en:"Saint Lucia", flag:"🇱🇨" },
-  MX: { ko:"멕시코",       en:"Mexico",      flag:"🇲🇽" },
-  NI: { ko:"니카라과",     en:"Nicaragua",   flag:"🇳🇮" },
-  PA: { ko:"파나마",       en:"Panama",      flag:"🇵🇦" },
-  PE: { ko:"페루",         en:"Peru",        flag:"🇵🇪" },
-  PY: { ko:"파라과이",     en:"Paraguay",    flag:"🇵🇾" },
-  SR: { ko:"수리남",       en:"Suriname",    flag:"🇸🇷" },
-  SV: { ko:"엘살바도르",   en:"El Salvador", flag:"🇸🇻" },
-  TT: { ko:"트리니다드 토바고", en:"Trinidad and Tobago", flag:"🇹🇹", aliases:["트리니다드토바고"] },
-  US: { ko:"미국",         en:"United States", flag:"🇺🇸", aliases:["미합중국","USA"] },
-  UY: { ko:"우루과이",     en:"Uruguay",     flag:"🇺🇾" },
-  VC: { ko:"세인트빈센트 그레나딘", en:"Saint Vincent and the Grenadines", flag:"🇻🇨" },
-  VE: { ko:"베네수엘라",   en:"Venezuela",   flag:"🇻🇪" },
+  AG: { ko:"앤티가 바부다", en:"Antigua and Barbuda" },
+  AR: { ko:"아르헨티나",   en:"Argentina" },
+  BB: { ko:"바베이도스",   en:"Barbados" },
+  BO: { ko:"볼리비아",     en:"Bolivia" },
+  BR: { ko:"브라질",       en:"Brazil" },
+  BS: { ko:"바하마",       en:"Bahamas" },
+  BZ: { ko:"벨리즈",       en:"Belize" },
+  CA: { ko:"캐나다",       en:"Canada" },
+  CL: { ko:"칠레",         en:"Chile" },
+  CO: { ko:"콜롬비아",     en:"Colombia" },
+  CR: { ko:"코스타리카",   en:"Costa Rica" },
+  CU: { ko:"쿠바",         en:"Cuba" },
+  DO: { ko:"도미니카 공화국", en:"Dominican Republic", aliases:["도미니카공화국"] },
+  EC: { ko:"에콰도르",     en:"Ecuador" },
+  DM: { ko:"도미니카연방", en:"Dominica", aliases:["도미니카"] },
+  GD: { ko:"그레나다",     en:"Grenada" },
+  GY: { ko:"가이아나",     en:"Guyana" },
+  GT: { ko:"과테말라",     en:"Guatemala" },
+  HN: { ko:"온두라스",     en:"Honduras" },
+  HT: { ko:"아이티",       en:"Haiti" },
+  JM: { ko:"자메이카",     en:"Jamaica" },
+  KN: { ko:"세인트키츠 네비스", en:"Saint Kitts and Nevis" },
+  LC: { ko:"세인트루시아", en:"Saint Lucia" },
+  MX: { ko:"멕시코",       en:"Mexico" },
+  NI: { ko:"니카라과",     en:"Nicaragua" },
+  PA: { ko:"파나마",       en:"Panama" },
+  PE: { ko:"페루",         en:"Peru" },
+  PY: { ko:"파라과이",     en:"Paraguay" },
+  SR: { ko:"수리남",       en:"Suriname" },
+  SV: { ko:"엘살바도르",   en:"El Salvador" },
+  TT: { ko:"트리니다드 토바고", en:"Trinidad and Tobago", aliases:["트리니다드토바고"] },
+  US: { ko:"미국",         en:"United States", aliases:["미합중국","USA"] },
+  UY: { ko:"우루과이",     en:"Uruguay" },
+  VC: { ko:"세인트빈센트 그레나딘", en:"Saint Vincent and the Grenadines" },
+  VE: { ko:"베네수엘라",   en:"Venezuela" },
   // 아프리카
-  BW: { ko:"보츠와나",     en:"Botswana",    flag:"🇧🇼" },
-  DZ: { ko:"알제리",       en:"Algeria",     flag:"🇩🇿" },
-  CV: { ko:"카보베르데",   en:"Cape Verde",  flag:"🇨🇻", aliases:["카보 베르데"] },
-  EG: { ko:"이집트",       en:"Egypt",       flag:"🇪🇬" },
-  ET: { ko:"에티오피아",   en:"Ethiopia",    flag:"🇪🇹" },
-  GH: { ko:"가나",         en:"Ghana",       flag:"🇬🇭" },
-  KE: { ko:"케냐",         en:"Kenya",       flag:"🇰🇪" },
-  LR: { ko:"라이베리아",   en:"Liberia",     flag:"🇱🇷" },
-  LS: { ko:"레소토",       en:"Lesotho",     flag:"🇱🇸" },
-  MA: { ko:"모로코",       en:"Morocco",     flag:"🇲🇦" },
-  MW: { ko:"말라위",       en:"Malawi",      flag:"🇲🇼" },
-  MZ: { ko:"모잠비크",     en:"Mozambique",  flag:"🇲🇿" },
-  NA: { ko:"나미비아",     en:"Namibia",     flag:"🇳🇦" },
-  NG: { ko:"나이지리아",   en:"Nigeria",     flag:"🇳🇬" },
-  BI: { ko:"브룬디",       en:"Burundi",     flag:"🇧🇮" },
-  RW: { ko:"르완다",       en:"Rwanda",      flag:"🇷🇼" },
-  ST: { ko:"상투메프린시페", en:"Sao Tome and Principe", flag:"🇸🇹" },
-  TN: { ko:"튀니지",       en:"Tunisia",     flag:"🇹🇳" },
-  SN: { ko:"세네갈",       en:"Senegal",     flag:"🇸🇳" },
-  SZ: { ko:"에스와티니",   en:"Eswatini",    flag:"🇸🇿", aliases:["스와질란드"] },
-  TZ: { ko:"탄자니아",     en:"Tanzania",    flag:"🇹🇿" },
-  UG: { ko:"우간다",       en:"Uganda",      flag:"🇺🇬" },
-  ZA: { ko:"남아프리카공화국", en:"South Africa", flag:"🇿🇦", aliases:["남아공","남아프리카"] },
-  ZM: { ko:"잠비아",       en:"Zambia",      flag:"🇿🇲" },
-  ZW: { ko:"짐바브웨",     en:"Zimbabwe",    flag:"🇿🇼" },
+  BW: { ko:"보츠와나",     en:"Botswana" },
+  DZ: { ko:"알제리",       en:"Algeria" },
+  CV: { ko:"카보베르데",   en:"Cape Verde", aliases:["카보 베르데"] },
+  EG: { ko:"이집트",       en:"Egypt" },
+  ET: { ko:"에티오피아",   en:"Ethiopia" },
+  GH: { ko:"가나",         en:"Ghana" },
+  KE: { ko:"케냐",         en:"Kenya" },
+  LR: { ko:"라이베리아",   en:"Liberia" },
+  LS: { ko:"레소토",       en:"Lesotho" },
+  MA: { ko:"모로코",       en:"Morocco" },
+  MW: { ko:"말라위",       en:"Malawi" },
+  MZ: { ko:"모잠비크",     en:"Mozambique" },
+  NA: { ko:"나미비아",     en:"Namibia" },
+  NG: { ko:"나이지리아",   en:"Nigeria" },
+  BI: { ko:"브룬디",       en:"Burundi" },
+  RW: { ko:"르완다",       en:"Rwanda" },
+  ST: { ko:"상투메프린시페", en:"Sao Tome and Principe" },
+  TN: { ko:"튀니지",       en:"Tunisia" },
+  SN: { ko:"세네갈",       en:"Senegal" },
+  SZ: { ko:"에스와티니",   en:"Eswatini", aliases:["스와질란드"] },
+  TZ: { ko:"탄자니아",     en:"Tanzania" },
+  UG: { ko:"우간다",       en:"Uganda" },
+  ZA: { ko:"남아프리카공화국", en:"South Africa", aliases:["남아공","남아프리카"] },
+  ZM: { ko:"잠비아",       en:"Zambia" },
+  ZW: { ko:"짐바브웨",     en:"Zimbabwe" },
 };
 
 // 검색어 → cca2 코드 반환 (한국어·영어·별칭 모두 지원)
@@ -1203,7 +1349,7 @@ function ApostilleTab() {
       return;
     }
 
-    const { code: cca2, ko: nameKo, en: nameEn, flag } = found;
+    const { code: cca2, ko: nameKo, en: nameEn } = found;
     const dbEntry = APOSTILLE_DB[cca2] || null;
     const today = new Date().toISOString().split("T")[0];
     // 가입은 되었으나 발효일이 아직 도래하지 않은 국가 → 현재는 영사확인 대상
@@ -1215,7 +1361,6 @@ function ApostilleTab() {
     setResult({
       country_ko: nameKo,
       country_en: nameEn,
-      flag,
       cca2,
       is_member: isMember,
       is_pending: isPending,
@@ -1242,7 +1387,7 @@ function ApostilleTab() {
 
       {/* 흐름도 */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-5">
-        <h4 className="font-bold text-gray-700 mb-3 text-sm sm:text-sm">📋 외국 학력서류 인증 흐름</h4>
+        <h4 className="font-bold text-gray-700 mb-3 text-sm sm:text-sm flex items-center gap-1.5"><ClipboardList size={15} className="text-gray-400 flex-shrink-0" />외국 학력서류 인증 흐름</h4>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
           {[
             { box: "bg-blue-50 border-blue-200", badgeClass: "bg-blue-600", titleClass: "text-blue-800", subClass: "text-blue-500", badge: "방법 1", title: "교육부 홈페이지", sub: "학력인정학교 목록" },
@@ -1309,7 +1454,7 @@ function ApostilleTab() {
               {history.map(h => (
                 <button key={h} onClick={() => { setCountry(h); doSearch(h); }}
                   className="text-sm bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1 rounded-full border border-rose-200 transition-colors flex items-center gap-1">
-                  <span>🕐</span>{h}
+                  <Clock size={12} className="flex-shrink-0 opacity-70" />{h}
                 </button>
               ))}
             </div>
@@ -1396,9 +1541,10 @@ function ApostilleResult({ info }) {
   const badgeCls = ok ? "bg-emerald-100 text-emerald-800"
                  : pending ? "bg-blue-100 text-blue-800"
                  : "bg-amber-100 text-amber-800";
-  const badgeTxt = ok ? "✅ 아포스티유 협약 가입국"
-                 : pending ? `🕒 가입 완료 — ${info.join_date}부터 발효 (현재는 영사확인)`
-                 : "❌ 아포스티유 협약 미가입국";
+  const BadgeIcon = ok ? CheckCircle2 : pending ? Clock : XCircle;
+  const badgeTxt = ok ? "아포스티유 협약 가입국"
+                 : pending ? `가입 완료 — ${info.join_date}부터 발효 (현재는 영사확인)`
+                 : "아포스티유 협약 미가입국";
   return (
     <div className={`rounded-xl border p-4 sm:p-5 mt-3 ${boxCls}`}>
       {/* 헤더 */}
@@ -1408,18 +1554,20 @@ function ApostilleResult({ info }) {
           : <XCircle     size={28} className={`flex-shrink-0 ${pending ? "text-blue-500" : "text-amber-500"}`} />}
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            {info.flag && <span className="text-2xl leading-none">{info.flag}</span>}
+            {info.cca2 && (
+              <span className="flex-shrink-0 inline-flex items-center justify-center min-w-[34px] h-[26px] px-1.5 rounded-md border border-gray-300 bg-white text-gray-600 text-sm font-bold font-mono tracking-wider">
+                {info.cca2}
+              </span>
+            )}
             <h4 className={`text-lg sm:text-xl font-black ${titleCls}`}>
               {info.country_ko || "—"}
             </h4>
             {info.country_en && (
               <span className="text-sm sm:text-sm text-gray-500">({info.country_en})</span>
             )}
-            {info.cca2 && (
-              <span className="text-[12px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-mono">{info.cca2}</span>
-            )}
           </div>
-          <span className={`inline-block mt-1 px-2.5 py-0.5 rounded-full text-sm sm:text-sm font-bold ${badgeCls}`}>
+          <span className={`inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full text-sm sm:text-sm font-bold ${badgeCls}`}>
+            <BadgeIcon size={13} className="flex-shrink-0" />
             {badgeTxt}
           </span>
         </div>
@@ -1434,7 +1582,7 @@ function ApostilleResult({ info }) {
       )}
       {info.note && (
         <div className="bg-white/70 border rounded-lg p-2.5 text-sm text-gray-700 mb-3 flex items-start gap-1.5">
-          <span className="flex-shrink-0">⚠️</span>
+          <AlertTriangle size={15} className="flex-shrink-0 mt-0.5 text-amber-500" />
           <span>{info.note}</span>
         </div>
       )}
@@ -1461,8 +1609,8 @@ function ApostilleResult({ info }) {
       )}
 
       <p className="text-[12px] text-gray-400 mt-3 flex items-center gap-1">
-        <span>📊</span>
-        <span>HCCH 자체 내장 데이터 · REST Countries API 국가명 조회 · 최종 확인은 <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="underline">apostille.go.kr</a>에서 하세요.</span>
+        <BarChart3 size={12} className="flex-shrink-0" />
+        <span>헤이그국제사법회의(HCCH) 협약 가입국 현황표(2026. 6. 30. 기준)를 자체 정리한 내장 데이터입니다. 최종 확인은 <a href="https://www.apostille.go.kr" target="_blank" rel="noreferrer" className="underline">apostille.go.kr</a>에서 하세요.</span>
       </p>
     </div>
   );
@@ -1482,7 +1630,7 @@ const NEIS_SECTIONS = [
       {
         subtitle: "성명 입력 원칙",
         items: [
-          "여권에 표기된 성명을 그대로 입력 — 성+띄어쓰기+이름 순서 (예: CHANNA SREYNGA)",
+          "여권에 표기된 성명을 그대로 입력 — 성+띄어쓰기+이름 순서 (예: HONG GILDONG)",
           "증빙서류에 영문·한글이 병기된 경우, 학생·학부모 희망에 따라 영문 또는 한글 중 선택",
           "복수국적자는 대한민국 국적 기준으로 입력",
           "한글 최대 20자 / 영문 최대 60자 입력 가능",
@@ -1686,7 +1834,7 @@ function NeisTab() {
 
       {/* 빠른 참조 카드 */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-        <h4 className="text-sm font-bold text-gray-700 mb-3">⚡ 학적 변동 유형별 핵심 메뉴 빠른 참조</h4>
+        <h4 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1.5"><Zap size={15} className="text-amber-500 flex-shrink-0" />학적 변동 유형별 핵심 메뉴 빠른 참조</h4>
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse min-w-[420px]">
             <thead>
@@ -1700,7 +1848,7 @@ function NeisTab() {
               {[
                 { sit: "1학년 신입 입교",     type: "입학",         menu: "[학적]-[기본학적관리]-[추가입학/입력누락자등록]" },
                 { sit: "학기 중 중도 입교",   type: "취학",         menu: "[학적]-[기본학적관리]-[추가입학/입력누락자등록]" },
-                { sit: "출국·학업중단",       type: "면제 (유예 ✕)", menu: "[학적]-[면제/유예 및 장기결석에 따른 정원 외 관리]" },
+                { sit: "출국·학업중단",       type: "면제 (유예 X)", menu: "[학적]-[면제/유예 및 장기결석에 따른 정원 외 관리]" },
                 { sit: "이전 학교 재입교",    type: "편입학",       menu: "[학적]-[전입관리]-[전편입/재취학생등록]" },
                 { sit: "신입생 정보 수정",    type: "수정",         menu: "[학적]-[기본학적관리]-[기본신상관리]" },
                 { sit: "재학생 정보 변경",    type: "정정",         menu: "[학생부]-[정정대장관리]-[정정대장작성]" },
@@ -1739,8 +1887,8 @@ function NeisTab() {
                     <div key={subtitle}>
                       <p className="text-sm font-bold text-indigo-800 mb-1.5">{subtitle}</p>
                       {path && (
-                        <p className="text-[13px] text-gray-600 font-mono bg-blue-50 border border-blue-100 px-3 py-1.5 rounded mb-2">
-                          📂 {path}
+                        <p className="text-[13px] text-gray-600 font-mono bg-blue-50 border border-blue-100 px-3 py-1.5 rounded mb-2 flex items-center gap-1.5">
+                          <FolderOpen size={13} className="flex-shrink-0 opacity-60" /><span>{path}</span>
                         </p>
                       )}
                       <ul className="space-y-1">
@@ -1762,10 +1910,9 @@ function NeisTab() {
 
       {/* 주의사항 공통 */}
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 space-y-1">
-        <p className="font-bold mb-1.5">⚠️ 나이스 처리 공통 유의사항</p>
+        <p className="font-bold mb-1.5 flex items-center gap-1.5"><AlertTriangle size={14} className="flex-shrink-0" />나이스 처리 공통 유의사항</p>
         <li className="list-none flex gap-1.5"><span className="flex-shrink-0">•</span><span>나이스 메뉴는 학교별·업무담당자 권한에 따라 다르게 나타날 수 있습니다.</span></li>
         <li className="list-none flex gap-1.5"><span className="flex-shrink-0">•</span><span>외국 국적 학생 면제 시 의무교육관리위원회 개최 불필요 (대한민국 국적 학생에만 해당).</span></li>
-        <li className="list-none flex gap-1.5"><span className="flex-shrink-0">•</span><span>예시 화면의 외국인등록번호 뒷자리 '7999999'·'8999999'는 개인정보 보호를 위한 임시 숫자로, 실제 입력 시 해당 학생의 번호를 입력합니다.</span></li>
         <li className="list-none flex gap-1.5"><span className="flex-shrink-0">•</span><span>시도교육청별 세부 지침이 상이하므로, 최종 처리 전 관할 교육청 공문·지침을 반드시 확인하세요.</span></li>
       </div>
     </div>
