@@ -457,7 +457,7 @@ function HomeTab({ onNav }) {
           <div>
             <h3 className="text-base sm:text-xl font-black mb-1.5 leading-snug">외국 국적 학생 학적 업무,<br className="sm:hidden" /> 핵심만 정확하게!</h3>
             <p className="text-blue-100 text-sm sm:text-sm leading-relaxed">
-              국내에 거주하는 외국 국적 아동은 미등록 이주아동·난민을 포함해 초등학교와 중학교 취학이 보장됩니다.
+              국내에 거주하는 외국 국적 학생은 미등록 이주 학생·난민을 포함해 초등학교와 중학교 취학이 보장됩니다.
               다만 의무교육 대상자는 아니어서 학적 처리 방식이 다릅니다. 입교·서류 검토·나이스 입력을 빠르고 정확하게 처리하세요.
             </p>
           </div>
@@ -612,8 +612,8 @@ function ChecklistTab() {
         <h3 className="text-sm sm:text-base font-bold text-gray-800 flex items-center gap-1.5"><Lightbulb size={16} className="text-amber-500 flex-shrink-0" />학생 신분별 제출 서류 확인</h3>
         <select value={type} onChange={e => setType(e.target.value)}
           className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 outline-none w-full sm:w-auto">
-          <option value="general">일반 외국인 등록 아동</option>
-          <option value="unregistered">미등록 이주 아동 (외국인등록증 없음)</option>
+          <option value="general">일반 외국인 등록 학생</option>
+          <option value="unregistered">미등록 이주 학생 (외국인등록증 없음)</option>
         </select>
       </div>
       <div className="flex items-center gap-2 mb-4">
@@ -2026,7 +2026,7 @@ const QNA_DATA = [
         tag: "서류"
       },
       {
-        q: "외국인등록증이 아예 없는 미등록 아동입니다. 받아야 하나요?",
+        q: "외국인등록증이 아예 없는 미등록 학생입니다. 받아야 하나요?",
         a: [
           "받습니다. 우리나라가 가입한 UN 「아동의 권리에 관한 협약」 제28조는 체류 자격과 무관하게 18세 미만 아동에게 교육받을 권리를 인정하고 있습니다. 「헌법」 제6조도 같은 취지입니다.",
           "서류도 대체할 수 있습니다. 「초·중등교육법 시행령」 제19조·제75조·제89조의2는 출입국 사실증명이나 외국인등록증을 낼 수 없는 경우 임대차계약서, 인우보증서 같은 국내 거주 확인 서류로 갈음할 수 있도록 정하고 있습니다.",
@@ -2047,7 +2047,7 @@ const QNA_DATA = [
           "입교 단계에서는 세 가지를 순서대로 합니다. 국가예방접종 증명서를 내도록 안내하고, 접종 내역을 확인해 나이스에 입력한 뒤, 빠진 접종이 있으면 「7-18세 청소년 예방접종 따라잡기 지침」에 따라 접종을 권합니다.",
           "따라잡기 권고 대상은 일곱 가지입니다. B형간염, 폴리오, A형간염, MMR, 수두, 일본뇌염, Tdap/Td.",
           "입교한 뒤에도 추가 접종 연령이 되거나 계절 인플루엔자 접종이 필요하면 학부모에게 안내하고, 맞은 내역을 받아 나이스에 올립니다.",
-          "미등록 아동도 접종할 수 있습니다. 외국인 임시 관리번호를 발급받으면 위탁의료기관에서 접종이 가능합니다. 질병관리청 상담센터(1339)나 관할 보건소에 문의하면 이용할 기관을 안내받을 수 있습니다.",
+          "미등록 학생도 접종할 수 있습니다. 외국인 임시 관리번호를 발급받으면 위탁의료기관에서 접종이 가능합니다. 질병관리청 상담센터(1339)나 관할 보건소에 문의하면 이용할 기관을 안내받을 수 있습니다.",
         ],
         tag: "예방접종"
       },
